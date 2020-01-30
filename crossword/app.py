@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBox
 from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
+import storage
 
 class App(QWidget):
 
@@ -40,15 +41,25 @@ class App(QWidget):
             for col in range(0,15):
                 text_box = CrosswordLineEdit()
                 text_box.setAlignment(Qt.AlignCenter)
+                text_box.setObjectName("row{}_col{}".format(row, col))
                 text_box.setMaxLength(1)
                 layout.addWidget(text_box, row, col)
 
         self.gridGroupBox.setLayout(layout)
+        self.showCrossword('saved/example.txt')
 
     def createOptionsLayout(self):
         self.optionsGroupBox = QGroupBox()
         layout = QVBoxLayout()
         self.optionsGroupBox.setLayout(layout)
+
+    def showCrossword(self, filename):
+        cross = storage.load(filename)
+        for row in range(0, 15):
+            for col in range(0, 15):
+                letter = cross[row][col]
+                name = "row{}_col{}".format(row, col)
+                self.gridGroupBox.findChild(CrosswordLineEdit, name).setText(letter)
 
 class CrosswordLineEdit(QLineEdit):
 
