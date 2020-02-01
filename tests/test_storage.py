@@ -12,9 +12,9 @@ class StorageTests(unittest.TestCase):
                 ['E','E','R','#','#']
         ]
 
-        storage.save(crossword, 'tests/test.txt')
+        storage.save(crossword, 'tests/test_crossword.txt')
 
-        saved = storage.load('tests/test.txt')
+        saved = storage.load('tests/test_crossword.txt')
         self.assertEqual(saved, crossword)
 
 if __name__ == '__main__':

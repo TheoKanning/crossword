@@ -1,7 +1,7 @@
 import sys
 from os import path
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
-from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout
+from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 import storage
@@ -57,9 +57,13 @@ class App(QWidget):
     def create_options_layout(self):
         self.options_group_box = QGroupBox()
         layout = QVBoxLayout()
+
         save = QPushButton("Save")
         save.clicked.connect(self.save_crossword)
         layout.addWidget(save)
+
+        suggestions = QLabel("Suggestions:")
+        layout.addWidget(suggestions)
 
         self.options_group_box.setLayout(layout)
 
