@@ -1,9 +1,15 @@
 import sys
+from os import path
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
 from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 import storage
+
+FILENAME='saved/crossword.txt'
+
+def get_box_name(row, col):
+    return "row{}_col{}".format(row, col)
 
 class App(QWidget):
 
@@ -20,19 +26,19 @@ class App(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
-        self.createGridLayout()
-        self.createOptionsLayout()
+        self.create_grid_layout()
+        self.create_options_layout()
 
         windowLayout = QHBoxLayout()
-        windowLayout.addWidget(self.gridGroupBox)
-        windowLayout.addWidget(self.optionsGroupBox)
+        windowLayout.addWidget(self.grid_group_box)
+        windowLayout.addWidget(self.options_group_box)
         self.setLayout(windowLayout)
 
         self.show()
 
-    def createGridLayout(self):
-        self.gridGroupBox = QGroupBox()
-        self.gridGroupBox.setMaximumSize(450, 450)
+    def create_grid_layout(self):
+        self.grid_group_box = QGroupBox()
+        self.grid_group_box.setMaximumSize(450, 450)
         layout = QGridLayout()
         layout.setSpacing(0)
         layout.setRowStretch(0, 0)
@@ -41,25 +47,43 @@ class App(QWidget):
             for col in range(0,15):
                 text_box = CrosswordLineEdit()
                 text_box.setAlignment(Qt.AlignCenter)
-                text_box.setObjectName("row{}_col{}".format(row, col))
+                text_box.setObjectName(get_box_name(row, col))
                 text_box.setMaxLength(1)
                 layout.addWidget(text_box, row, col)
 
-        self.gridGroupBox.setLayout(layout)
-        self.showCrossword('saved/example.txt')
+        self.grid_group_box.setLayout(layout)
+        self.load_crossword()
 
-    def createOptionsLayout(self):
-        self.optionsGroupBox = QGroupBox()
+    def create_options_layout(self):
+        self.options_group_box = QGroupBox()
         layout = QVBoxLayout()
-        self.optionsGroupBox.setLayout(layout)
+        save = QPushButton("Save")
+        save.clicked.connect(self.save_crossword)
+        layout.addWidget(save)
 
-    def showCrossword(self, filename):
-        cross = storage.load(filename)
+        self.options_group_box.setLayout(layout)
+
+    def load_crossword(self):
+        if not path.exists(FILENAME):
+            return
+        cross = storage.load(FILENAME)
         for row in range(0, 15):
             for col in range(0, 15):
                 letter = cross[row][col]
-                name = "row{}_col{}".format(row, col)
-                self.gridGroupBox.findChild(CrosswordLineEdit, name).setText(letter)
+                name = get_box_name(row, col)
+                self.grid_group_box.findChild(CrosswordLineEdit, name).setText(letter)
+
+    def save_crossword(self):
+        crossword = []
+        for row in range(0, 15):
+            line = []
+            for col in range(0, 15):
+                name = get_box_name(row, col)
+                letter = self.grid_group_box.findChild(CrosswordLineEdit, name).text()
+                letter = ' ' if letter == '' else letter
+                line.append(letter)
+            crossword.append(line)
+        cross = storage.save(crossword, FILENAME)
 
 class CrosswordLineEdit(QLineEdit):
 

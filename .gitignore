@@ -130,3 +130,6 @@ dmypy.json
 
 # Extra test artifacts
 tests/test.txt
+
+# saved crosswords
+saved/
