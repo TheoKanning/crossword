@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pyqt5 = "*"
+pyqt5 = "==5.14.1"
 
 [requires]
 python_version = "3.6"
