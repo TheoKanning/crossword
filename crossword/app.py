@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt
 import storage
 
 FILENAME='saved/crossword.txt'
+BLOCK='.'
 
 def get_box_name(row, col):
     return "row{}_col{}".format(row, col)
@@ -104,7 +105,7 @@ class CrosswordLineEdit(QLineEdit):
             self.setText(s.upper())
             return
         p = self.palette()
-        color = Qt.black if s == '#' else Qt.white
+        color = Qt.black if s == BLOCK else Qt.white
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
         self.focusNextChild()
