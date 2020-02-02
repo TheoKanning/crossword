@@ -1,0 +1,4 @@
+apple;50
+bind;50
+bird;50
+word;50

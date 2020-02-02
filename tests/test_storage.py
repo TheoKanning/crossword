@@ -1,7 +1,13 @@
+import os
 import unittest
 from context import storage
 
+TEST_FILE='tests/test_crossword.txt'
+
 class StorageTests(unittest.TestCase):
+
+    def tearDown(self):
+        os.remove(TEST_FILE)
 
     def test_save_and_load(self):
         crossword = [
@@ -12,9 +18,9 @@ class StorageTests(unittest.TestCase):
                 ['E','E','R','.','.']
         ]
 
-        storage.save(crossword, 'tests/test_crossword.txt')
+        storage.save(crossword, TEST_FILE)
 
-        saved = storage.load('tests/test_crossword.txt')
+        saved = storage.load(TEST_FILE)
         self.assertEqual(saved, crossword)
 
 if __name__ == '__main__':

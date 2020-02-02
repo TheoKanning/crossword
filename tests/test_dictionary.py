@@ -3,6 +3,10 @@ from context import dictionary
 
 class DictionaryTests(unittest.TestCase):
 
+    def setUp(self):
+        # use test dictionary since the real one isn't checked in
+        dictionary.DICTIONARY="tests/test_dictionary.txt"
+
     def test_single_response(self):
         results = dictionary.search("bird")
         self.assertEqual(results, [["bird", '50']])
@@ -18,7 +22,6 @@ class DictionaryTests(unittest.TestCase):
     def test_multiple_responses(self):
         results = dictionary.search("bi d")
         expected = [
-                ['bigd', '50'],
                 ['bind', '50'],
                 ['bird', '50']
             ]
