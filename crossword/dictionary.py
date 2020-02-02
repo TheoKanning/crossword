@@ -13,6 +13,7 @@ def search(word):
     if not path.exists(DICTIONARY):
         return []
 
+    word = word.lower()
     regex = '^' + word.replace(' ','.') + '$' # replace wildcards, enforce start and stop
 
     with open(DICTIONARY) as f:

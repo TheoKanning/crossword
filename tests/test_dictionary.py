@@ -7,6 +7,10 @@ class DictionaryTests(unittest.TestCase):
         results = dictionary.search("bird")
         self.assertEqual(results, [["bird", '50']])
 
+    def test_case_insensitive(self):
+        results = dictionary.search("bIrD")
+        self.assertEqual(results, [["bird", '50']])
+
     def test_no_response(self):
         results = dictionary.search("kdlka")
         self.assertEqual(results, [])

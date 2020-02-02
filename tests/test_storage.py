@@ -5,11 +5,11 @@ class StorageTests(unittest.TestCase):
 
     def test_save_and_load(self):
         crossword = [
-                ['#','#','I','D','K'],
+                ['.','.','I','D','K'],
                 ['A','W','F','U','L'],
                 ['P','I',' ','C','E'],
                 ['S','L','A','T','E'],
-                ['E','E','R','#','#']
+                ['E','E','R','.','.']
         ]
 
         storage.save(crossword, 'tests/test_crossword.txt')
