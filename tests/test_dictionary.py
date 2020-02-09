@@ -5,7 +5,7 @@ class DictionaryTests(unittest.TestCase):
 
     def setUp(self):
         # use test dictionary since the real one isn't checked in
-        dictionary.DICTIONARY="tests/test_dictionary.txt"
+        dictionary.DICTIONARY="tests/sample_dictionary.txt"
 
     def test_single_response(self):
         results = dictionary.search("bird")

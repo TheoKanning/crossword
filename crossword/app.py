@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal
 import dictionary
 import storage
+import words
 
 FILENAME='saved/crossword.txt'
 BLOCK='.'
@@ -84,12 +85,7 @@ class App(QWidget):
                 self.grid_group_box.findChild(CrosswordLineEdit, name).setText(letter)
 
     def save_crossword(self):
-        crossword = []
-        for row in range(0, 15):
-            line = []
-            for col in range(0, 15):
-                line.append(self.get_letter(row, col))
-            crossword.append(line)
+        crossword = self.get_crossword()
         cross = storage.save(crossword, FILENAME)
 
     def get_letter(self, row, col):
@@ -98,27 +94,24 @@ class App(QWidget):
         letter = ' ' if letter == '' else letter
         return letter
 
+    def get_crossword(self):
+        crossword = []
+        for row in range(0, 15):
+            line = []
+            for col in range(0, 15):
+                line.append(self.get_letter(row, col))
+            crossword.append(line)
+        return crossword
+
     def on_box_focused(self, name):
         print("Box " + name + " is focused")
         row, col = get_coords_from_name(name)
         letter = self.get_letter(row, col)
         if letter != BLOCK:
-            word = self.get_word_from_square(row, col)
-            words = [': '.join(w) for w in dictionary.search(word)]
-            print(words)
-            self.suggestions.setText('\n'.join(words))
-
-    def get_word_from_square(self, row, col):
-        """
-        Gets the horizontal word in the given square. Takes blocks into account.
-        """
-        word = [self.get_letter(row, c) for c in range(0, 15)]
-        word = ''.join(word)
-        blocks_before = word[:col].count(BLOCK)
-        word = word.split(BLOCK)[blocks_before]
-        print('|'+word+'|')
-        return word
-
+            crossword = self.get_crossword()
+            word = words.get_word(crossword, row, col)
+            suggestions = [': '.join(w) for w in dictionary.search(word)]
+            self.suggestions.setText('\n'.join(suggestions))
 
 class CrosswordLineEdit(QLineEdit):
 
@@ -144,7 +137,15 @@ class CrosswordLineEdit(QLineEdit):
         color = Qt.black if s == BLOCK else Qt.white
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
-        self.focusNextChild()
+        if s != "":
+            # don't focus next if text has been deleted
+            self.focusNextChild()
+
+    def highlight(self):
+        return
+
+    def clear_highlight(self):
+        return
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

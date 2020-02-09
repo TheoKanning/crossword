@@ -11,6 +11,7 @@ def search(word):
     Returns (word, score), sorted highest to lowest. Limited to 20 words.
     """
     if not path.exists(DICTIONARY):
+        print("Could not find dictionary file: " + DICTIONARY)
         return []
 
     word = word.lower()
