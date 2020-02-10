@@ -38,6 +38,5 @@ I included `example.txt` to show the formatting.
 ## Future Improvements
 * Allow vertical suggestions and auto-focusing
 * Save and load multiple files
-* Highlight letters with suggestions
 * Calculate puzzle stats
 * Stop using views as source of truth

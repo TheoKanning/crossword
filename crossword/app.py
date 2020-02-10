@@ -109,9 +109,23 @@ class App(QWidget):
         letter = self.get_letter(row, col)
         if letter != BLOCK:
             crossword = self.get_crossword()
+            highlights = words.get_highlighted_squares(crossword, row, col)
+            self.set_highlights(highlights)
+
             word = words.get_word(crossword, row, col)
             suggestions = [': '.join(w) for w in dictionary.search(word)]
             self.suggestions.setText('\n'.join(suggestions))
+
+    def set_highlights(self, highlights):
+        for row in range(0, 15):
+            for col in range(0, 15):
+                name = get_box_name(row, col)
+                self.grid_group_box.findChild(CrosswordLineEdit, name).clear_highlight()
+
+        for row, col in highlights:
+            name = get_box_name(row, col)
+            self.grid_group_box.findChild(CrosswordLineEdit, name).highlight()
+
 
 class CrosswordLineEdit(QLineEdit):
 
@@ -133,19 +147,25 @@ class CrosswordLineEdit(QLineEdit):
         if s.islower():
             self.setText(s.upper())
             return
-        p = self.palette()
         color = Qt.black if s == BLOCK else Qt.white
-        p.setColor(self.backgroundRole(), color)
-        self.setPalette(p)
+        self.set_background_color(color)
         if s != "":
             # don't focus next if text has been deleted
             self.focusNextChild()
 
     def highlight(self):
+        self.set_background_color(Qt.yellow)
         return
 
     def clear_highlight(self):
+        color = Qt.black if self.text() == BLOCK else Qt.white
+        self.set_background_color(color)
         return
+
+    def set_background_color(self, color):
+        p = self.palette()
+        p.setColor(self.backgroundRole(), color)
+        self.setPalette(p)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
