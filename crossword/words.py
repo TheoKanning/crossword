@@ -1,4 +1,42 @@
+from collections import namedtuple
+
+# todo make an enum or something, this looks stupid
+BACKGROUND_WHITE = 0
+BACKGROUND_BLOCK = 1
+BACKGROUND_YELLOW = 2
+
 BLOCK='.' # todo move this definition into one place
+
+Square = namedtuple('Square', ['text', 'background', 'focused'])
+
+class Puzzle:
+    """
+    A class that holds all of the state for a crossword puzzle.
+    """
+    def __init__(self, squares, filename):
+        assert len(squares) == len(squares[0])
+        self.size = len(squares)
+        self.squares = squares
+        self.filename = filename
+        self.focus = (0, 0)
+        self.highlight = []
+
+    def update_focus(self, row, col):
+        self.focus = (rox, col)
+        self.highlight = get_highlighted_squares(self,squares, row, col)
+
+    def update_square(self, row, col, text):
+        self.squares[row,col] = text
+
+    def get_square(self, row, col):
+        text = self.squares[row][col]
+        background = BACKGROUND_WHITE
+        if text is BLOCK:
+            background = BACKGROUND_BLOCK
+        elif (row, col) in self.highlight:
+            background = BACKGROUND_YELLOW
+        focused = (row, col) is self.focus
+        return Square(text, background, focused)
 
 def get_highlighted_squares(crossword, row, col):
     """

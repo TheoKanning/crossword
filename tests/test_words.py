@@ -6,6 +6,10 @@ from context import words
 
 class CrosswordTests(unittest.TestCase):
 
+    def test_not_square(self):
+        with self.assertRaises(AssertionError):
+            words.Puzzle([[''],['']], 'filename')
+
     @parameterized.expand([
         [(0,0), [(0,0), (0,1), (0,2)]],
         [(5,9), [(5,8), (5,9), (5,10)]],
