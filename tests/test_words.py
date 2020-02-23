@@ -20,7 +20,7 @@ class CrosswordTests(unittest.TestCase):
             words.Puzzle([[''],['']], 'filename')
 
     @parameterized.expand([
-        [(0,0), [(0, 0)]], # todo make the block not highlighted?
+        [(0,0), []],
         [(1,0), [(1,0), (1,1), (1,2), (1,3), (1,4)]],
         [(2,0), [(2,0)]],
         [(2,2), [(2,2), (2,3), (2,4)]],

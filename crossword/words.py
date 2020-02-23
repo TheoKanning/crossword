@@ -29,6 +29,7 @@ class Puzzle:
 
     def update_square(self, row, col, text):
         self.squares[row][col] = text
+        self.highlight = self.get_highlighted_squares(self.squares, row, col)
 
     def get_square(self, row, col):
         text = self.squares[row][col]
@@ -45,6 +46,8 @@ class Puzzle:
         Return the coordinates of all of the squares that form a continuous word
         with the given square.
         """
+        if self.squares[row][col] == BLOCK:
+            return []
         (start, end) = self.get_highlighted_indices(crossword[row], col)
         return [(row, i) for i in range(start, end + 1)]
 
