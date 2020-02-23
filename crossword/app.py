@@ -26,7 +26,9 @@ class App(QWidget):
         self.top = 10
         self.width = 640
         self.height = 480
+        self.puzzle = words.Puzzle([['']], FILENAME)
         self.initUI()
+        self.load_crossword()
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -52,14 +54,12 @@ class App(QWidget):
         for row in range(0,15):
             for col in range(0,15):
                 text_box = CrosswordLineEdit()
-                text_box.setAlignment(Qt.AlignCenter)
                 text_box.setObjectName(get_box_name(row, col))
-                text_box.setMaxLength(1)
+                text_box.edited.connect(self.on_box_edited)
                 text_box.focused.connect(self.on_box_focused)
                 layout.addWidget(text_box, row, col)
 
         self.grid_group_box.setLayout(layout)
-        self.load_crossword()
 
     def create_options_layout(self):
         self.options_group_box = QGroupBox()
@@ -75,92 +75,66 @@ class App(QWidget):
         self.options_group_box.setLayout(layout)
 
     def load_crossword(self):
-        if not path.exists(FILENAME):
-            return
-        cross = storage.load(FILENAME)
-        for row in range(0, 15):
-            for col in range(0, 15):
-                letter = cross[row][col].replace(' ', '') # remove spaces
-                name = get_box_name(row, col)
-                self.grid_group_box.findChild(CrosswordLineEdit, name).setText(letter)
+        # todo move default empty crossword somewhere else
+        cross = [['' for i in range(0,15)] for j in range(0,15)]
+        if path.exists(FILENAME):
+            cross = storage.load(FILENAME)
+        self.puzzle = words.Puzzle(cross, FILENAME)
+        self.update_views()
 
     def save_crossword(self):
-        crossword = self.get_crossword()
-        cross = storage.save(crossword, FILENAME)
+        self.get_crossword() # todo make this work again, use spaces to save
+        cross = storage.save(self.puzzle.squares, FILENAME)
 
-    def get_letter(self, row, col):
-        name = get_box_name(row, col)
-        letter = self.grid_group_box.findChild(CrosswordLineEdit, name).text()
-        letter = ' ' if letter == '' else letter
-        return letter
-
-    def get_crossword(self):
-        crossword = []
-        for row in range(0, 15):
-            line = []
-            for col in range(0, 15):
-                line.append(self.get_letter(row, col))
-            crossword.append(line)
-        return crossword
+    def on_box_edited(self, name, text):
+        coords = get_coords_from_name(name)
+        self.puzzle.update_square(coords[0], coords[1], text)
+        self.update_views()
 
     def on_box_focused(self, name):
-        print("Box " + name + " is focused")
         row, col = get_coords_from_name(name)
-        letter = self.get_letter(row, col)
-        if letter != BLOCK:
-            crossword = self.get_crossword()
-            highlights = words.get_highlighted_squares(crossword, row, col)
-            self.set_highlights(highlights)
+        self.puzzle.update_focus(row, col)
+        self.update_views()
 
-            word = words.get_word(crossword, row, col)
-            suggestions = [': '.join(w) for w in dictionary.search(word)]
-            self.suggestions.setText('\n'.join(suggestions))
+        word = self.puzzle.get_word(self.puzzle.squares, row, col) # todo fix this
+        suggestions = [': '.join(w) for w in dictionary.search(word)]
+        self.suggestions.setText('\n'.join(suggestions))
 
-    def set_highlights(self, highlights):
-        for row in range(0, 15):
-            for col in range(0, 15):
+    def update_views(self):
+        for row in range(0, self.puzzle.size):
+            for col in range(0, self.puzzle.size):
+                square = self.puzzle.get_square(row, col)
                 name = get_box_name(row, col)
-                self.grid_group_box.findChild(CrosswordLineEdit, name).clear_highlight()
-
-        for row, col in highlights:
-            name = get_box_name(row, col)
-            self.grid_group_box.findChild(CrosswordLineEdit, name).highlight()
+                self.grid_group_box.findChild(CrosswordLineEdit, name).update(square)
 
 
 class CrosswordLineEdit(QLineEdit):
 
+    edited = pyqtSignal(str, str) # name, text
     focused = pyqtSignal(str)
 
     def __init__(self, *args):
         QLineEdit.__init__(self, *args)
-        self.textChanged.connect(self.on_text_changed)
+        self.textEdited.connect(self.on_text_changed)
         self.setAutoFillBackground(True)
+        self.setAlignment(Qt.AlignCenter)
+        self.setMaxLength(1)
 
     def focusInEvent(self, e):
         self.focused.emit(self.objectName())
         super().focusInEvent(e)
 
     def on_text_changed(self, s):
-        """
-        Set text to upper case and change background color
-        """
-        if s.islower():
-            self.setText(s.upper())
-            return
-        color = Qt.black if s == BLOCK else Qt.white
-        self.set_background_color(color)
-        if s != "":
-            # don't focus next if text has been deleted
-            self.focusNextChild()
+        self.edited.emit(self.objectName(), s.upper())
 
-    def highlight(self):
-        self.set_background_color(Qt.yellow)
-        return
-
-    def clear_highlight(self):
-        color = Qt.black if self.text() == BLOCK else Qt.white
-        self.set_background_color(color)
-        return
+    def update(self, square):
+        self.setText(square.text)
+        if square.background == words.BACKGROUND_WHITE:
+            self.set_background_color(Qt.white)
+        if square.background == words.BACKGROUND_BLACK:
+            self.set_background_color(Qt.black)
+        if square.background == words.BACKGROUND_YELLOW:
+            self.set_background_color(Qt.yellow)
 
     def set_background_color(self, color):
         p = self.palette()

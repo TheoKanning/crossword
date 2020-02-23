@@ -32,7 +32,7 @@ class CrosswordTests(unittest.TestCase):
         self.assertEqual(puzzle.highlight, highlight)
 
     @parameterized.expand([
-        [(0,0), '.', words.BACKGROUND_BLOCK, False],
+        [(0,0), '.', words.BACKGROUND_BLACK, False],
         [(1,1), 'W', words.BACKGROUND_WHITE, False],
         [(2,2), ' ', words.BACKGROUND_YELLOW, False],
         [(2,3), 'C', words.BACKGROUND_YELLOW, True]
