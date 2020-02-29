@@ -9,7 +9,6 @@ import storage
 import words
 
 FILENAME='saved/crossword.txt'
-BLOCK='.'
 
 def get_box_name(row, col):
     return "{}_{}".format(row, col)
@@ -95,10 +94,6 @@ class App(QWidget):
         self.puzzle.update_focus(row, col)
         self.update_views()
 
-        word = self.puzzle.get_word(row, col)
-        suggestions = [': '.join(w) for w in dictionary.search(word)]
-        self.suggestions.setText('\n'.join(suggestions))
-
     def update_views(self):
         for row in range(0, self.puzzle.size):
             for col in range(0, self.puzzle.size):
@@ -106,6 +101,13 @@ class App(QWidget):
                 name = get_box_name(row, col)
                 self.grid_group_box.findChild(CrosswordLineEdit, name).update(square)
 
+        self.update_suggestions()
+
+    def update_suggestions(self):
+        (row, col) = self.puzzle.focus
+        word = self.puzzle.get_word(row, col)
+        suggestions = [': '.join(w) for w in dictionary.search(word)]
+        self.suggestions.setText('\n'.join(suggestions))
 
 class CrosswordLineEdit(QLineEdit):
 
