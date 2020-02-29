@@ -56,6 +56,19 @@ class CrosswordTests(unittest.TestCase):
         actual = puzzle.get_word(row, col)
         self.assertEqual(actual, word)
 
+    @parameterized.expand([
+        [(0, 2), 'A', (0, 3)],
+        [(0, 4), 'A', (1, 0)],
+        [(1, 2), '.', (1, 3)],
+        [(2, 0), 'A', (2, 2)],
+        [(3, 1),  '', (3, 1)],
+        [(4, 2), 'A', (0, 2)]
+        ])
+    def test_get_next_focus(self, current_focus, text, new_focus):
+        puzzle = words.Puzzle(squares, "file.txt")
+        puzzle.update_square(current_focus[0], current_focus[1], text)
+        self.assertEqual(puzzle.focus, new_focus)
+
 if __name__ == "__main__":
     unittest.main()
 

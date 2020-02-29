@@ -130,6 +130,8 @@ class CrosswordLineEdit(QLineEdit):
 
     def update(self, square):
         self.setText(square.text)
+        if square.focused:
+            self.setFocus()
         if square.background == words.BACKGROUND_WHITE:
             self.set_background_color(Qt.white)
         if square.background == words.BACKGROUND_BLACK:

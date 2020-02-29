@@ -1,4 +1,5 @@
 from collections import namedtuple
+from copy import deepcopy
 
 # todo make an enum or something, this looks stupid
 BACKGROUND_WHITE = 0
@@ -15,10 +16,9 @@ class Puzzle:
     """
     def __init__(self, squares, filename):
         # todo load crossword by filename here, or default to empty 15x15 array
-        # todo store blank squares as empty here, only use spaces when persisting
         assert len(squares) == len(squares[0])
         self.size = len(squares)
-        self.squares = squares
+        self.squares = deepcopy(squares)
         self.filename = filename
         self.focus = (0, 0)
         self.highlight = []
@@ -29,7 +29,8 @@ class Puzzle:
 
     def update_square(self, row, col, text):
         self.squares[row][col] = text
-        self.highlight = self.get_highlighted_squares(self.squares, row, col)
+        self.focus = self.get_next_focus(row, col, text)
+        self.highlight = self.get_highlighted_squares(self.squares, self.focus[0], self.focus[1])
 
     def get_square(self, row, col):
         text = self.squares[row][col]
@@ -76,4 +77,26 @@ class Puzzle:
                 break
             end = i
         return (start, end)
+
+    def get_next_focus(self, row, col, text):
+        """
+        Get the coordinates of the square that should be focused after the given square
+        """
+        if text == '':
+            # don't move forward if text was deleted
+            return (row, col)
+
+        col += 1
+        if col >= self.size:
+            row += 1
+            col = 0
+        if row >= self.size:
+            row = 0
+            col = 0
+
+        if self.squares[row][col] == BLOCK:
+            # if the next square is a block, try again starting at the new square
+            return self.get_next_focus(row, col, text)
+
+        return (row, col)
 
