@@ -13,7 +13,7 @@ class StorageTests(unittest.TestCase):
         crossword = [
                 ['.','.','I','D','K'],
                 ['A','W','F','U','L'],
-                ['P','I',' ','C','E'],
+                ['P','I', '','C','E'],
                 ['S','L','A','T','E'],
                 ['E','E','R','.','.']
         ]

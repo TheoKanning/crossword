@@ -27,10 +27,10 @@ class App(QWidget):
         self.width = 640
         self.height = 480
         self.puzzle = words.Puzzle([['']], FILENAME)
-        self.initUI()
+        self.init_ui()
         self.load_crossword()
 
-    def initUI(self):
+    def init_ui(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
@@ -83,7 +83,6 @@ class App(QWidget):
         self.update_views()
 
     def save_crossword(self):
-        self.get_crossword() # todo make this work again, use spaces to save
         cross = storage.save(self.puzzle.squares, FILENAME)
 
     def on_box_edited(self, name, text):
@@ -96,7 +95,7 @@ class App(QWidget):
         self.puzzle.update_focus(row, col)
         self.update_views()
 
-        word = self.puzzle.get_word(self.puzzle.squares, row, col) # todo fix this
+        word = self.puzzle.get_word(row, col)
         suggestions = [': '.join(w) for w in dictionary.search(word)]
         self.suggestions.setText('\n'.join(suggestions))
 

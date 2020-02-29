@@ -7,7 +7,7 @@ from context import words
 squares = [
            ['.','.','I','D','K'],
            ['A','W','F','U','L'],
-           ['P','.',' ','C','E'],
+           ['P','.','','C','E'],
            ['S','L','A','T','E'],
            ['E','E','R','.','.']
    ]
@@ -34,7 +34,7 @@ class CrosswordTests(unittest.TestCase):
     @parameterized.expand([
         [(0,0), '.', words.BACKGROUND_BLACK, False],
         [(1,1), 'W', words.BACKGROUND_WHITE, False],
-        [(2,2), ' ', words.BACKGROUND_YELLOW, False],
+        [(2,2), '', words.BACKGROUND_YELLOW, False],
         [(2,3), 'C', words.BACKGROUND_YELLOW, True]
         ])
     def test_get_square_info(self, square, text, background, focused):
@@ -53,7 +53,7 @@ class CrosswordTests(unittest.TestCase):
     def test_get_word(self, row, col, word):
         crossword = storage.load("tests/crossword.txt")
         puzzle = words.Puzzle(crossword, "file.txt")
-        actual = puzzle.get_word(crossword, row, col)
+        actual = puzzle.get_word(row, col)
         self.assertEqual(actual, word)
 
 if __name__ == "__main__":

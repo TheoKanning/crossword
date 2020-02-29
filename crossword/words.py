@@ -51,14 +51,14 @@ class Puzzle:
         (start, end) = self.get_highlighted_indices(crossword[row], col)
         return [(row, i) for i in range(start, end + 1)]
 
-    def get_word(self, crossword, row, col):
+    def get_word(self, row, col):
         """
         Finds the word containing the given square
         todo use highlights to get this
         """
-        row_word = crossword[row]
+        row_word = self.squares[row]
         (start, end) = self.get_highlighted_indices(row_word, col)
-        return ''.join(row_word[start:end + 1])
+        return ''.join([char if char != '' else ' ' for char in row_word[start:end + 1]])
 
     def get_highlighted_indices(self, word, index):
         """
