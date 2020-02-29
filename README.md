@@ -39,4 +39,3 @@ I included `example.txt` to show the formatting.
 * Allow vertical suggestions and auto-focusing
 * Save and load multiple files
 * Calculate puzzle stats
-* Pre-load dictionary for faster searches

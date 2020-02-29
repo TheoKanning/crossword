@@ -15,10 +15,11 @@ def search(word):
         return []
 
     word = word.lower()
-    regex = '^' + word.replace(' ','.') + '$' # replace wildcards, enforce start and stop
+    regex = '^' + word.replace(' ','.') + ";.*$" # replace wildcards, enforce start and stop
 
     with open(DICTIONARY) as f:
-        words = [line[:-1].split(';') for line in f if re.search(regex, line.split(';')[0])]
+        text = f.read()
+        words = [word.split(';') for word in re.findall(regex, text, re.MULTILINE)]
         words.sort(key=lambda x: x[1], reverse=True)
         return words[:20]
 
