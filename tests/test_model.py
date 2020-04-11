@@ -1,8 +1,8 @@
 from parameterized import parameterized
 import unittest
 from context import dictionary
+from context import model
 from context import storage
-from context import words
 
 squares = [
            ['.','.','I','D','K'],
@@ -17,7 +17,7 @@ class CrosswordTests(unittest.TestCase):
 
     def test_not_square(self):
         with self.assertRaises(AssertionError):
-            words.Puzzle([[''],['']], 'filename')
+            model.Puzzle([[''],['']], 'filename')
 
     @parameterized.expand([
         [(0,0), []],
@@ -26,19 +26,19 @@ class CrosswordTests(unittest.TestCase):
         [(2,2), [(2,2), (2,3), (2,4)]],
         ])
     def test_update_highlighted_squares(self, focus, highlight):
-        puzzle = words.Puzzle(squares, "file.txt")
+        puzzle = model.Puzzle(squares, "file.txt")
         puzzle.update_focus(focus[0], focus[1])
         self.assertEqual(puzzle.focus, focus)
         self.assertEqual(puzzle.highlight, highlight)
 
     @parameterized.expand([
-        [(0,0), '.', words.BACKGROUND_BLACK, False],
-        [(1,1), 'W', words.BACKGROUND_WHITE, False],
-        [(2,2), '', words.BACKGROUND_YELLOW, False],
-        [(2,3), 'C', words.BACKGROUND_YELLOW, True]
+        [(0,0), '.', model.BACKGROUND_BLACK, False],
+        [(1,1), 'W', model.BACKGROUND_WHITE, False],
+        [(2,2), '', model.BACKGROUND_YELLOW, False],
+        [(2,3), 'C', model.BACKGROUND_YELLOW, True]
         ])
     def test_get_square_info(self, square, text, background, focused):
-        puzzle = words.Puzzle(squares, "file.txt")
+        puzzle = model.Puzzle(squares, "file.txt")
         puzzle.update_focus(2, 3)
         actual = puzzle.get_square(square[0], square[1])
         self.assertEqual(actual.text, text)
@@ -52,7 +52,7 @@ class CrosswordTests(unittest.TestCase):
         ])
     def test_get_word(self, row, col, word):
         crossword = storage.load("tests/crossword.txt")
-        puzzle = words.Puzzle(crossword, "file.txt")
+        puzzle = model.Puzzle(crossword, "file.txt")
         actual = puzzle.get_word(row, col)
         self.assertEqual(actual, word)
 
@@ -65,7 +65,7 @@ class CrosswordTests(unittest.TestCase):
         [(4, 2), 'A', (0, 2)]
         ])
     def test_get_next_focus(self, current_focus, text, new_focus):
-        puzzle = words.Puzzle(squares, "file.txt")
+        puzzle = model.Puzzle(squares, "file.txt")
         puzzle.update_square(current_focus[0], current_focus[1], text)
         self.assertEqual(puzzle.focus, new_focus)
 

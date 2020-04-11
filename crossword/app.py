@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal
 import dictionary
+import model
 import storage
-import words
 
 FILENAME='saved/crossword.txt'
 
@@ -25,7 +25,7 @@ class App(QWidget):
         self.top = 10
         self.width = 640
         self.height = 480
-        self.puzzle = words.Puzzle([['']], FILENAME)
+        self.puzzle = model.Puzzle([['']], FILENAME)
         self.init_ui()
         self.load_crossword()
 
@@ -78,7 +78,7 @@ class App(QWidget):
         cross = [['' for i in range(0,15)] for j in range(0,15)]
         if path.exists(FILENAME):
             cross = storage.load(FILENAME)
-        self.puzzle = words.Puzzle(cross, FILENAME)
+        self.puzzle = model.Puzzle(cross, FILENAME)
         self.update_views()
 
     def save_crossword(self):
@@ -132,11 +132,11 @@ class CrosswordLineEdit(QLineEdit):
         self.setText(square.text)
         if square.focused:
             self.setFocus()
-        if square.background == words.BACKGROUND_WHITE:
+        if square.background == model.BACKGROUND_WHITE:
             self.set_background_color(Qt.white)
-        if square.background == words.BACKGROUND_BLACK:
+        if square.background == model.BACKGROUND_BLACK:
             self.set_background_color(Qt.black)
-        if square.background == words.BACKGROUND_YELLOW:
+        if square.background == model.BACKGROUND_YELLOW:
             self.set_background_color(Qt.yellow)
 
     def set_background_color(self, color):
