@@ -1,8 +1,8 @@
 import os
 import unittest
-from context import storage
+from crossword import storage
 
-TEST_FILE='tests/test_crossword.txt'
+TEST_FILE='test/test_crossword.txt'
 
 class StorageTests(unittest.TestCase):
 

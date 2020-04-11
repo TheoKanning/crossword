@@ -1,11 +1,11 @@
 import unittest
-from context import dictionary
+from crossword import dictionary
 
 class DictionaryTests(unittest.TestCase):
 
     def setUp(self):
         # use test dictionary since the real one isn't checked in
-        dictionary.DICTIONARY="tests/sample_dictionary.txt"
+        dictionary.DICTIONARY="test/sample_dictionary.txt"
 
     def test_single_response(self):
         results = dictionary.search("bird")

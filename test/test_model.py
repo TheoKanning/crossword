@@ -1,8 +1,8 @@
 from parameterized import parameterized
 import unittest
-from context import dictionary
-from context import model
-from context import storage
+from crossword import dictionary
+from crossword import model
+from crossword import storage
 
 squares = [
            ['.','.','I','D','K'],
@@ -59,7 +59,7 @@ class CrosswordTests(unittest.TestCase):
         [ 8,  4, model.Mode.VERTICAL,  "CANTOR"],
         ])
     def test_get_word(self, row, col, mode, word):
-        crossword = storage.load("tests/crossword.txt")
+        crossword = storage.load("test/crossword.txt")
         puzzle = model.Puzzle(crossword)
         puzzle.mode = mode
         actual = puzzle.get_word(row, col)
