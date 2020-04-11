@@ -20,13 +20,18 @@ class CrosswordTests(unittest.TestCase):
             model.Puzzle([[''],['']], 'filename')
 
     @parameterized.expand([
-        [(0,0), []],
-        [(1,0), [(1,0), (1,1), (1,2), (1,3), (1,4)]],
-        [(2,0), [(2,0)]],
-        [(2,2), [(2,2), (2,3), (2,4)]],
+        [(0,0), model.Mode.HORIZONTAL, []],
+        [(1,0), model.Mode.HORIZONTAL, [(1,0), (1,1), (1,2), (1,3), (1,4)]],
+        [(2,0), model.Mode.HORIZONTAL, [(2,0)]],
+        [(2,2), model.Mode.HORIZONTAL, [(2,2), (2,3), (2,4)]],
+        [(0,0), model.Mode.VERTICAL, []],
+        [(1,0), model.Mode.VERTICAL, [(1,0), (2,0), (3,0), (4,0)]],
+        [(2,2), model.Mode.VERTICAL, [(0,2), (1,2), (2,2), (3,2), (4,2)]],
+        [(4,1), model.Mode.VERTICAL, [(3,1), (4,1)]],
         ])
-    def test_update_highlighted_squares(self, focus, highlight):
-        puzzle = model.Puzzle(squares, "file.txt")
+    def test_update_highlighted_squares(self, focus, mode, highlight):
+        puzzle = model.Puzzle(squares)
+        puzzle.mode = mode
         puzzle.update_focus(focus[0], focus[1])
         self.assertEqual(puzzle.focus, focus)
         self.assertEqual(puzzle.highlight, highlight)
@@ -38,34 +43,44 @@ class CrosswordTests(unittest.TestCase):
         [(2,3), 'C', model.BACKGROUND_YELLOW, True]
         ])
     def test_get_square_info(self, square, text, background, focused):
-        puzzle = model.Puzzle(squares, "file.txt")
+        puzzle = model.Puzzle(squares)
         puzzle.update_focus(2, 3)
         actual = puzzle.get_square(square[0], square[1])
         self.assertEqual(actual.text, text)
         self.assertEqual(actual.background, background)
         self.assertEqual(actual.focused, focused)
 
+# todo add vertical tests
     @parameterized.expand([
-        [8, 0, "E  ET"],
-        [11, 14, "LENT"],
-        [6, 5, "LASER"]
+        [ 8,  0, model.Mode.HORIZONTAL, "E  ET"],
+        [11, 14, model.Mode.HORIZONTAL, "LENT"],
+        [ 6,  5, model.Mode.HORIZONTAL, "LASER"],
+        [ 8,  0, model.Mode.HORIZONTAL, "E  ET"],
+        [ 7,  2, model.Mode.VERTICAL,"G ANDEUR"],
+        [ 8,  4, model.Mode.VERTICAL,  "CANTOR"],
         ])
-    def test_get_word(self, row, col, word):
+    def test_get_word(self, row, col, mode, word):
         crossword = storage.load("tests/crossword.txt")
-        puzzle = model.Puzzle(crossword, "file.txt")
+        puzzle = model.Puzzle(crossword)
+        puzzle.mode = mode
         actual = puzzle.get_word(row, col)
         self.assertEqual(actual, word)
 
     @parameterized.expand([
-        [(0, 2), 'A', (0, 3)],
-        [(0, 4), 'A', (1, 0)],
-        [(1, 2), '.', (1, 3)],
-        [(2, 0), 'A', (2, 2)],
-        [(3, 1),  '', (3, 1)],
-        [(4, 2), 'A', (0, 2)]
+        [(0, 2), 'A', model.Mode.HORIZONTAL, (0, 3)],
+        [(0, 4), 'A', model.Mode.HORIZONTAL, (1, 0)],
+        [(1, 2), '.', model.Mode.HORIZONTAL, (1, 3)],
+        [(2, 0), 'A', model.Mode.HORIZONTAL, (2, 2)],
+        [(3, 1),  '', model.Mode.HORIZONTAL, (3, 1)],
+        [(4, 2), 'A', model.Mode.HORIZONTAL, (0, 2)],
+        [(0, 2), 'A', model.Mode.VERTICAL, (1, 2)],
+        [(4, 0), 'A', model.Mode.VERTICAL, (1, 1)],
+        [(1, 1), 'A', model.Mode.VERTICAL, (3, 1)],
+        [(3, 4), 'A', model.Mode.VERTICAL, (1, 0)]
         ])
-    def test_get_next_focus(self, current_focus, text, new_focus):
-        puzzle = model.Puzzle(squares, "file.txt")
+    def test_get_next_focus(self, current_focus, text, mode, new_focus):
+        puzzle = model.Puzzle(squares)
+        puzzle.mode = mode
         puzzle.update_square(current_focus[0], current_focus[1], text)
         self.assertEqual(puzzle.focus, new_focus)
 
