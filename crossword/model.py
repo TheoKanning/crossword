@@ -30,7 +30,7 @@ class Puzzle:
         self.mode = Mode.HORIZONTAL
 
     def toggle_orientation(self):
-        self.mode = Mode.VERTICAL if self.mode is Mode.HORIZONTAL else Mode.Horizontal
+        self.mode = Mode.VERTICAL if self.mode is Mode.HORIZONTAL else Mode.HORIZONTAL
         self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
 
     def update_focus(self, row, col):

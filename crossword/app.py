@@ -73,6 +73,11 @@ class App(QWidget):
 
         self.options_group_box.setLayout(layout)
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Shift:
+            self.puzzle.toggle_orientation()
+            self.update_views()
+
     def load_crossword(self):
         # todo move default empty crossword somewhere else
         cross = [['' for i in range(0,15)] for j in range(0,15)]
