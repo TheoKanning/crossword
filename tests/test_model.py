@@ -37,10 +37,10 @@ class CrosswordTests(unittest.TestCase):
         self.assertEqual(puzzle.highlight, highlight)
 
     @parameterized.expand([
-        [(0,0), '.', model.BACKGROUND_BLACK, False],
-        [(1,1), 'W', model.BACKGROUND_WHITE, False],
-        [(2,2), '', model.BACKGROUND_YELLOW, False],
-        [(2,3), 'C', model.BACKGROUND_YELLOW, True]
+        [(0,0), '.', model.Background.BLACK, False],
+        [(1,1), 'W', model.Background.WHITE, False],
+        [(2,2), '', model.Background.YELLOW, False],
+        [(2,3), 'C', model.Background.YELLOW, True]
         ])
     def test_get_square_info(self, square, text, background, focused):
         puzzle = model.Puzzle(squares)
@@ -50,7 +50,6 @@ class CrosswordTests(unittest.TestCase):
         self.assertEqual(actual.background, background)
         self.assertEqual(actual.focused, focused)
 
-# todo add vertical tests
     @parameterized.expand([
         [ 8,  0, model.Mode.HORIZONTAL, "E  ET"],
         [11, 14, model.Mode.HORIZONTAL, "LENT"],

@@ -11,11 +11,6 @@ class Background(Enum):
     BLACK = 1
     YELLOW = 2
 
-# todo make an enum or something, this looks stupid
-BACKGROUND_WHITE = 0
-BACKGROUND_BLACK = 1
-BACKGROUND_YELLOW = 2
-
 BLOCK='.' # todo move this definition into one place
 
 Square = namedtuple('Square', ['text', 'background', 'focused'])
@@ -36,7 +31,7 @@ class Puzzle:
 
     def toggle_orientation(self):
         self.mode = Mode.VERTICAL if self.mode is Mode.HORIZONTAL else Mode.Horizontal
-        # todo add method to refresh all
+        self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
 
     def update_focus(self, row, col):
         self.focus = (row, col)
@@ -49,11 +44,11 @@ class Puzzle:
 
     def get_square(self, row, col):
         text = self.squares[row][col]
-        background = BACKGROUND_WHITE
+        background = Background.WHITE
         if text == BLOCK:
-            background = BACKGROUND_BLACK
+            background = Background.BLACK
         elif (row, col) in self.highlight:
-            background = BACKGROUND_YELLOW
+            background = Background.YELLOW
         focused = (row, col) == self.focus
         return Square(text, background, focused)
 
