@@ -38,6 +38,10 @@ class Puzzle:
         self.highlight = self.get_highlighted_squares(row, col)
 
     def update_square(self, row, col, text):
+        if text == BLOCK:
+            self.squares[self.size - 1 - row][self.size - 1 - col] = BLOCK
+        elif self.squares[row][col] == BLOCK and text != BLOCK:
+            self.squares[self.size - 1 - row][self.size - 1 - col] = ''
         self.squares[row][col] = text
         self.focus = self.get_next_focus(row, col, text)
         self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])

@@ -83,6 +83,17 @@ class CrosswordTests(unittest.TestCase):
         puzzle.update_square(current_focus[0], current_focus[1], text)
         self.assertEqual(puzzle.focus, new_focus)
 
+    def test_update_square_block_symmetry(self):
+        puzzle = model.Puzzle(squares)
+        puzzle.update_square(4, 0, model.BLOCK)
+
+        self.assertEqual(puzzle.get_square(4, 0).text, model.BLOCK)
+        self.assertEqual(puzzle.get_square(0, 4).text, model.BLOCK)
+
+        puzzle.update_square(0, 4, 'A')
+
+        self.assertEqual(puzzle.get_square(4, 0).text, '')
+        self.assertEqual(puzzle.get_square(0, 4).text, 'A')
 if __name__ == "__main__":
     unittest.main()
 
