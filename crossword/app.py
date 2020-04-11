@@ -25,7 +25,7 @@ class App(QWidget):
         self.top = 10
         self.width = 640
         self.height = 480
-        self.puzzle = Puzzle([['']], FILENAME)
+        self.puzzle = Puzzle()
         self.init_ui()
         self.load_crossword()
 
@@ -79,11 +79,10 @@ class App(QWidget):
             self.update_views()
 
     def load_crossword(self):
-        # todo move default empty crossword somewhere else
-        cross = [['' for i in range(0,15)] for j in range(0,15)]
+        cross = None
         if path.exists(FILENAME):
             cross = storage.load(FILENAME)
-        self.puzzle = Puzzle(cross, FILENAME)
+        self.puzzle = Puzzle(cross)
         self.update_views()
 
     def save_crossword(self):

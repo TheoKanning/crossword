@@ -19,9 +19,11 @@ class Puzzle:
     """
     A class that holds all of the state for a crossword puzzle.
     """
-    def __init__(self, squares, filename=None):
-        # todo load crossword by filename here, or default to empty 15x15 array
-        assert len(squares) == len(squares[0])
+    def __init__(self, squares=None, filename=None):
+        if squares:
+            assert len(squares) == len(squares[0])
+        else:
+            squares = [['' for i in range(0,15)] for j in range(0,15)]
         self.size = len(squares)
         self.squares = deepcopy(squares)
         self.filename = filename
