@@ -1,3 +1,4 @@
+import re
 import sys
 from os import path
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
@@ -80,8 +81,8 @@ class App(QWidget):
 
     def load_crossword(self):
         cross = None
-        if path.exists(FILENAME):
-            cross = storage.load(FILENAME)
+#        if path.exists(FILENAME):
+#            cross = storage.load(FILENAME)
         self.puzzle = Puzzle(cross)
         self.update_views()
 
@@ -123,13 +124,16 @@ class CrosswordLineEdit(QLineEdit):
         self.textEdited.connect(self.on_text_changed)
         self.setAutoFillBackground(True)
         self.setAlignment(Qt.AlignCenter)
-        self.setMaxLength(1)
 
     def focusInEvent(self, e):
         self.focused.emit(self.objectName())
         super().focusInEvent(e)
 
     def on_text_changed(self, s):
+        pattern = re.compile('[^a-zA-z\.]') # remove anything except letters and periods
+        s = pattern.sub('', s)
+        if len(s) > 1:
+            s = s[-1]
         self.edited.emit(self.objectName(), s.upper())
 
     def update(self, square):
