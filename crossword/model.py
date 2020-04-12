@@ -40,12 +40,13 @@ class Puzzle:
         self.highlight = self.get_highlighted_squares(row, col)
 
     def update_square(self, row, col, text):
+        # maintain block symmetry
         if text == BLOCK:
             self.squares[self.size - 1 - row][self.size - 1 - col] = BLOCK
         elif self.squares[row][col] == BLOCK and text != BLOCK:
             self.squares[self.size - 1 - row][self.size - 1 - col] = ''
         self.squares[row][col] = text
-        self.focus = self.get_next_focus(row, col, text)
+        self.get_next_focus(text)
         self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
 
     def get_square(self, row, col):
@@ -94,34 +95,32 @@ class Puzzle:
         highlighted.sort()
         return highlighted
 
-    def get_next_focus(self, row, col, text):
+    def get_next_focus(self, text):
         """
         Get the coordinates of the square that should be focused after the given square
         """
         if text == '':
-            # don't move forward if text was deleted
-            return (row, col)
-
-        if self.mode is Mode.HORIZONTAL:
-            col += 1
-            if col >= self.size:
-                row += 1
-                col = 0
-            if row >= self.size:
-                row = 0
-                col = 0
+            # text was deleted, go backwards
+            if self.mode is Mode.HORIZONTAL:
+                self.move_left()
+            else:
+                self.move_up()
         else:
-            row += 1
-            if row >= self.size:
-                row = 0
-                col += 1
-            if col >= self.size:
-                row = 0
-                col = 0
+            # text was added
+            if self.mode is Mode.HORIZONTAL:
+                self.move_right()
+            else:
+                self.move_down()
 
-        if self.squares[row][col] == BLOCK:
-            # if the next square is a block, try again starting at the new square
-            return self.get_next_focus(row, col, text)
+    def move_up(self):
+        self.focus = (max(0, self.focus[0] - 1), self.focus[1])
 
-        return (row, col)
+    def move_down(self):
+        self.focus = (min(self.size - 1, self.focus[0] + 1), self.focus[1])
+
+    def move_left(self):
+        self.focus = (self.focus[0], max(0, self.focus[1] - 1))
+
+    def move_right(self):
+        self.focus = (self.focus[0], min(self.size - 1, self.focus[1] + 1))
 

@@ -67,20 +67,20 @@ class CrosswordTests(unittest.TestCase):
 
     @parameterized.expand([
         [(0, 2), 'A', model.Mode.HORIZONTAL, (0, 3)],
-        [(0, 4), 'A', model.Mode.HORIZONTAL, (1, 0)],
+        [(0, 4), 'A', model.Mode.HORIZONTAL, (0, 4)],
         [(1, 2), '.', model.Mode.HORIZONTAL, (1, 3)],
-        [(2, 0), 'A', model.Mode.HORIZONTAL, (2, 2)],
-        [(3, 1),  '', model.Mode.HORIZONTAL, (3, 1)],
-        [(4, 2), 'A', model.Mode.HORIZONTAL, (0, 2)],
+        [(2, 0), 'A', model.Mode.HORIZONTAL, (2, 1)],
+        [(3, 1),  '', model.Mode.HORIZONTAL, (3, 0)],
         [(0, 2), 'A', model.Mode.VERTICAL, (1, 2)],
-        [(4, 0), 'A', model.Mode.VERTICAL, (1, 1)],
-        [(1, 1), 'A', model.Mode.VERTICAL, (3, 1)],
-        [(3, 4), 'A', model.Mode.VERTICAL, (1, 0)]
+        [(4, 0), 'A', model.Mode.VERTICAL, (4, 0)],
+        [(1, 1), 'A', model.Mode.VERTICAL, (2, 1)],
+        [(3, 4),  '', model.Mode.VERTICAL, (2, 4)]
         ])
     def test_get_next_focus(self, current_focus, text, mode, new_focus):
         puzzle = model.Puzzle(squares)
         puzzle.mode = mode
-        puzzle.update_square(current_focus[0], current_focus[1], text)
+        puzzle.focus = current_focus
+        puzzle.get_next_focus(text)
         self.assertEqual(puzzle.focus, new_focus)
 
     def test_update_square_block_symmetry(self):
@@ -94,6 +94,23 @@ class CrosswordTests(unittest.TestCase):
 
         self.assertEqual(puzzle.get_square(4, 0).text, '')
         self.assertEqual(puzzle.get_square(0, 4).text, 'A')
+
+    def test_movement(self):
+        puzzle = model.Puzzle(squares)
+        puzzle.focus = (2, 2)
+
+        puzzle.move_up()
+        self.assertEqual(puzzle.focus, (1, 2))
+
+        puzzle.move_left()
+        self.assertEqual(puzzle.focus, (1, 1))
+
+        puzzle.move_down()
+        self.assertEqual(puzzle.focus, (2, 1))
+
+        puzzle.move_right()
+        self.assertEqual(puzzle.focus, (2, 2))
+
 if __name__ == "__main__":
     unittest.main()
 
