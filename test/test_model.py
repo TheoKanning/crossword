@@ -60,7 +60,7 @@ class CrosswordTests(unittest.TestCase):
         crossword = storage.load("test/crossword.txt")
         puzzle = model.Puzzle(crossword)
         puzzle.mode = mode
-        actual = puzzle.get_word(row, col)
+        actual = puzzle.get_word(row, col, mode)
         self.assertEqual(actual, word)
 
     @parameterized.expand([

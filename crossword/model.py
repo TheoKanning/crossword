@@ -59,15 +59,15 @@ class Puzzle:
         focused = (row, col) == self.focus
         return Square(text, background, focused)
 
-    def get_word(self, row, col):
+    def get_word(self, row, col, mode):
         """
         Finds the word containing the given square
         """
-        squares = self.get_highlighted_squares(row, col)
+        squares = self.get_highlighted_squares(row, col, mode)
         chars = [self.squares[square[0]][square[1]] for square in squares]
         return ''.join([char if char != '' else ' ' for char in chars])
 
-    def get_highlighted_squares(self, row, col):
+    def get_highlighted_squares(self, row, col, mode=None):
         """
         Return the coordinates of all of the squares that form a continuous word
         with the given square.
@@ -75,8 +75,11 @@ class Puzzle:
         if self.squares[row][col] == BLOCK:
             return []
 
+        if not mode:
+            mode = self.mode
+
         highlighted = []
-        horizontal = self.mode is Mode.ACROSS
+        horizontal = mode is Mode.ACROSS
         index = col if horizontal else row
 
         for i in range(index, -1, -1):

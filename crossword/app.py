@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScroll
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, QEvent
 import dictionary
-from model import Puzzle, Background
+from model import Puzzle, Background, Mode
 import storage
 
 FILENAME='saved/crossword.txt'
@@ -24,7 +24,7 @@ class App(QWidget):
         self.title = 'Crossword Creator'
         self.left = 2000
         self.top = 10
-        self.width = 700
+        self.width = 1000
         self.height = 480
         self.puzzle = Puzzle()
         self.init_ui()
@@ -37,9 +37,17 @@ class App(QWidget):
         self.create_grid_layout()
         self.create_options_layout()
 
+        across_group_box, across_suggestions = self.create_suggestions_layout("Across")
+        self.across_suggestions = across_suggestions
+        down_group_box, down_suggestions = self.create_suggestions_layout("Down")
+        self.down_suggestions = down_suggestions
+
         windowLayout = QHBoxLayout()
         windowLayout.addWidget(self.grid_group_box)
+        windowLayout.addWidget(across_group_box)
+        windowLayout.addWidget(down_group_box)
         windowLayout.addWidget(self.options_group_box)
+
         self.setLayout(windowLayout)
 
         self.show()
@@ -70,15 +78,27 @@ class App(QWidget):
         save.clicked.connect(self.save_crossword)
         layout.addWidget(save)
 
+        self.options_group_box.setLayout(layout)
+
+# todo put this into a separate class?
+    def create_suggestions_layout(self, label_text):
+        suggestion_box = QGroupBox()
+        layout = QVBoxLayout()
+
+        label = QLabel(label_text)
+        layout.addWidget(label)
+
         scroll = QScrollArea()
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setWidgetResizable(True)
-        self.suggestions = QLabel("Suggestions:")
-        scroll.setWidget(self.suggestions)
+
+        suggestions = QLabel()
+        scroll.setWidget(suggestions)
         layout.addWidget(scroll)
 
-        self.options_group_box.setLayout(layout)
+        suggestion_box.setLayout(layout)
+        return suggestion_box, suggestions
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Shift:
@@ -132,9 +152,13 @@ class App(QWidget):
 
     def update_suggestions(self):
         (row, col) = self.puzzle.focus
-        word = self.puzzle.get_word(row, col)
+        # todo eww
+        word = self.puzzle.get_word(row, col, Mode.ACROSS)
         suggestions = [': '.join(w) for w in dictionary.search(word)]
-        self.suggestions.setText('\n'.join(suggestions))
+        self.across_suggestions.setText('\n'.join(suggestions))
+        word = self.puzzle.get_word(row, col, Mode.DOWN)
+        suggestions = [': '.join(w) for w in dictionary.search(word)]
+        self.down_suggestions.setText('\n'.join(suggestions))
 
 class CrosswordLineEdit(QLineEdit):
 
