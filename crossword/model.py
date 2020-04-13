@@ -3,8 +3,8 @@ from copy import deepcopy
 from enum import Enum
 
 class Mode(Enum):
-    HORIZONTAL = 0
-    VERTICAL = 1
+    ACROSS = 0
+    DOWN = 1
 
 class Background(Enum):
     WHITE = 0
@@ -29,10 +29,10 @@ class Puzzle:
         self.filename = filename
         self.focus = (0, 0)
         self.highlight = []
-        self.mode = Mode.HORIZONTAL
+        self.mode = Mode.ACROSS
 
     def toggle_orientation(self):
-        self.mode = Mode.VERTICAL if self.mode is Mode.HORIZONTAL else Mode.HORIZONTAL
+        self.mode = Mode.DOWN if self.mode is Mode.ACROSS else Mode.ACROSS
         self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
 
     def update_focus(self, row, col):
@@ -76,7 +76,7 @@ class Puzzle:
             return []
 
         highlighted = []
-        horizontal = self.mode is Mode.HORIZONTAL
+        horizontal = self.mode is Mode.ACROSS
         index = col if horizontal else row
 
         for i in range(index, -1, -1):
@@ -101,13 +101,13 @@ class Puzzle:
         """
         if text == '':
             # text was deleted, go backwards
-            if self.mode is Mode.HORIZONTAL:
+            if self.mode is Mode.ACROSS:
                 self.move_left()
             else:
                 self.move_up()
         else:
             # text was added
-            if self.mode is Mode.HORIZONTAL:
+            if self.mode is Mode.ACROSS:
                 self.move_right()
             else:
                 self.move_down()

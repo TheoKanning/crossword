@@ -79,10 +79,6 @@ class App(QWidget):
         if event.key() == Qt.Key_Shift:
             self.puzzle.toggle_orientation()
             self.update_views()
-        elif event.key() == Qt.Key_Left:
-            print("BUTT FUCK")
-            self.puzzle.move_left()
-            self.update_views()
 
     def eventFilter(self, obj, event):
         # filter to keep LineEdits from consuming arrow keys

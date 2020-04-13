@@ -18,14 +18,14 @@ class CrosswordTests(unittest.TestCase):
             model.Puzzle([[''],['']], 'filename')
 
     @parameterized.expand([
-        [(0,0), model.Mode.HORIZONTAL, []],
-        [(1,0), model.Mode.HORIZONTAL, [(1,0), (1,1), (1,2), (1,3), (1,4)]],
-        [(2,0), model.Mode.HORIZONTAL, [(2,0)]],
-        [(2,2), model.Mode.HORIZONTAL, [(2,2), (2,3), (2,4)]],
-        [(0,0), model.Mode.VERTICAL, []],
-        [(1,0), model.Mode.VERTICAL, [(1,0), (2,0), (3,0), (4,0)]],
-        [(2,2), model.Mode.VERTICAL, [(0,2), (1,2), (2,2), (3,2), (4,2)]],
-        [(4,1), model.Mode.VERTICAL, [(3,1), (4,1)]],
+        [(0,0), model.Mode.ACROSS, []],
+        [(1,0), model.Mode.ACROSS, [(1,0), (1,1), (1,2), (1,3), (1,4)]],
+        [(2,0), model.Mode.ACROSS, [(2,0)]],
+        [(2,2), model.Mode.ACROSS, [(2,2), (2,3), (2,4)]],
+        [(0,0), model.Mode.DOWN, []],
+        [(1,0), model.Mode.DOWN, [(1,0), (2,0), (3,0), (4,0)]],
+        [(2,2), model.Mode.DOWN, [(0,2), (1,2), (2,2), (3,2), (4,2)]],
+        [(4,1), model.Mode.DOWN, [(3,1), (4,1)]],
         ])
     def test_update_highlighted_squares(self, focus, mode, highlight):
         puzzle = model.Puzzle(squares)
@@ -49,12 +49,12 @@ class CrosswordTests(unittest.TestCase):
         self.assertEqual(actual.focused, focused)
 
     @parameterized.expand([
-        [ 8,  0, model.Mode.HORIZONTAL, "E  ET"],
-        [11, 14, model.Mode.HORIZONTAL, "LENT"],
-        [ 6,  5, model.Mode.HORIZONTAL, "LASER"],
-        [ 8,  0, model.Mode.HORIZONTAL, "E  ET"],
-        [ 7,  2, model.Mode.VERTICAL,"G ANDEUR"],
-        [ 8,  4, model.Mode.VERTICAL,  "CANTOR"],
+        [ 8,  0, model.Mode.ACROSS, "E  ET"],
+        [11, 14, model.Mode.ACROSS, "LENT"],
+        [ 6,  5, model.Mode.ACROSS, "LASER"],
+        [ 8,  0, model.Mode.ACROSS, "E  ET"],
+        [ 7,  2, model.Mode.DOWN,"G ANDEUR"],
+        [ 8,  4, model.Mode.DOWN,  "CANTOR"],
         ])
     def test_get_word(self, row, col, mode, word):
         crossword = storage.load("test/crossword.txt")
@@ -64,15 +64,15 @@ class CrosswordTests(unittest.TestCase):
         self.assertEqual(actual, word)
 
     @parameterized.expand([
-        [(0, 2), 'A', model.Mode.HORIZONTAL, (0, 3)],
-        [(0, 4), 'A', model.Mode.HORIZONTAL, (0, 4)],
-        [(1, 2), '.', model.Mode.HORIZONTAL, (1, 3)],
-        [(2, 0), 'A', model.Mode.HORIZONTAL, (2, 1)],
-        [(3, 1),  '', model.Mode.HORIZONTAL, (3, 0)],
-        [(0, 2), 'A', model.Mode.VERTICAL, (1, 2)],
-        [(4, 0), 'A', model.Mode.VERTICAL, (4, 0)],
-        [(1, 1), 'A', model.Mode.VERTICAL, (2, 1)],
-        [(3, 4),  '', model.Mode.VERTICAL, (2, 4)]
+        [(0, 2), 'A', model.Mode.ACROSS, (0, 3)],
+        [(0, 4), 'A', model.Mode.ACROSS, (0, 4)],
+        [(1, 2), '.', model.Mode.ACROSS, (1, 3)],
+        [(2, 0), 'A', model.Mode.ACROSS, (2, 1)],
+        [(3, 1),  '', model.Mode.ACROSS, (3, 0)],
+        [(0, 2), 'A', model.Mode.DOWN, (1, 2)],
+        [(4, 0), 'A', model.Mode.DOWN, (4, 0)],
+        [(1, 1), 'A', model.Mode.DOWN, (2, 1)],
+        [(3, 4),  '', model.Mode.DOWN, (2, 4)]
         ])
     def test_get_next_focus(self, current_focus, text, mode, new_focus):
         puzzle = model.Puzzle(squares)
