@@ -2,7 +2,7 @@ import re
 import sys
 from os import path
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
-from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScrollArea
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, QEvent
 import dictionary
@@ -24,7 +24,7 @@ class App(QWidget):
         self.title = 'Crossword Creator'
         self.left = 2000
         self.top = 10
-        self.width = 640
+        self.width = 700
         self.height = 480
         self.puzzle = Puzzle()
         self.init_ui()
@@ -70,8 +70,13 @@ class App(QWidget):
         save.clicked.connect(self.save_crossword)
         layout.addWidget(save)
 
+        scroll = QScrollArea()
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setWidgetResizable(True)
         self.suggestions = QLabel("Suggestions:")
-        layout.addWidget(self.suggestions)
+        scroll.setWidget(self.suggestions)
+        layout.addWidget(scroll)
 
         self.options_group_box.setLayout(layout)
 
