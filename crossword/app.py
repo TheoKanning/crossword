@@ -1,15 +1,23 @@
 import re
 import sys
 from os import path
+
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
 from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScrollArea
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, QEvent
-import dictionary
-from model import Puzzle, Background, Mode
-import storage
+
+from crossword import dictionary
+from crossword.model import Puzzle, Background, Mode
+from crossword import storage
 
 FILENAME='saved/crossword.txt'
+
+def start_app():
+    app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon('icon.png'))
+    ex = App()
+    sys.exit(app.exec_())
 
 def get_box_name(row, col):
     return "{}_{}".format(row, col)
@@ -198,8 +206,3 @@ class CrosswordLineEdit(QLineEdit):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon('icon.png'))
-    ex = App()
-    sys.exit(app.exec_())
