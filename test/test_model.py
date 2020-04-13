@@ -1,6 +1,5 @@
 from parameterized import parameterized
 import unittest
-from crossword import dictionary
 from crossword import model
 from crossword import storage
 
@@ -13,7 +12,6 @@ squares = [
    ]
 
 class CrosswordTests(unittest.TestCase):
-
 
     def test_not_square(self):
         with self.assertRaises(AssertionError):

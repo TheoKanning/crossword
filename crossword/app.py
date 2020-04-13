@@ -4,7 +4,7 @@ from os import path
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
 from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QEvent
 import dictionary
 from model import Puzzle, Background
 import storage
@@ -57,6 +57,7 @@ class App(QWidget):
                 text_box.setObjectName(get_box_name(row, col))
                 text_box.edited.connect(self.on_box_edited)
                 text_box.focused.connect(self.on_box_focused)
+                text_box.installEventFilter(self)
                 layout.addWidget(text_box, row, col)
 
         self.grid_group_box.setLayout(layout)
@@ -78,6 +79,26 @@ class App(QWidget):
         if event.key() == Qt.Key_Shift:
             self.puzzle.toggle_orientation()
             self.update_views()
+        elif event.key() == Qt.Key_Left:
+            print("BUTT FUCK")
+            self.puzzle.move_left()
+            self.update_views()
+
+    def eventFilter(self, obj, event):
+        # filter to keep LineEdits from consuming arrow keys
+        if event.type() == QEvent.KeyPress:
+            if event.key() in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Right, Qt.Key_Left]:
+                if event.key() == Qt.Key_Up:
+                    self.puzzle.move_up()
+                elif event.key() == Qt.Key_Down:
+                    self.puzzle.move_down()
+                elif event.key() == Qt.Key_Left:
+                    self.puzzle.move_left()
+                elif event.key() == Qt.Key_Right:
+                    self.puzzle.move_right()
+                self.update_views()
+                return True
+        return False
 
     def load_crossword(self):
         cross = None
