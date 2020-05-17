@@ -2,6 +2,8 @@ from collections import namedtuple
 from copy import deepcopy
 from enum import Enum
 
+from crossword import dictionary
+
 class Mode(Enum):
     ACROSS = 0
     DOWN = 1
@@ -127,3 +129,35 @@ class Puzzle:
     def move_right(self):
         self.focus = (self.focus[0], min(self.size - 1, self.focus[1] + 1))
 
+    def get_suggestions(self):
+        # returns suggestions for the focused square
+        # (across, down), each is a list of tuples (word, score)
+
+        if self.squares[self.focus[0]][self.focus[1]] == BLOCK:
+            return ([], [])
+
+        across_squares = self.get_highlighted_squares(self.focus[0], self.focus[1], Mode.ACROSS)
+        across_index = across_squares.index(self.focus)
+        across_word = self.get_word(self.focus[0], self.focus[1], Mode.ACROSS)
+        down_squares = self.get_highlighted_squares(self.focus[0], self.focus[1], Mode.DOWN)
+        down_index = down_squares.index(self.focus)
+        down_word = self.get_word(self.focus[0], self.focus[1], Mode.DOWN)
+
+        across_suggestions = dictionary.search(across_word)
+        down_suggestions = dictionary.search(down_word)
+
+        across_letters = set([word[0][across_index] for word in across_suggestions])
+        down_letters = set([word[0][down_index] for word in down_suggestions])
+
+        for i, word in enumerate(across_suggestions):
+            if word[0][across_index] in down_letters:
+                across_suggestions[i] = word[0], str(int(word[1]) + 22)
+
+        for i, word in enumerate(down_suggestions):
+            if word[0][down_index] in across_letters:
+                down_suggestions[i] = word[0], str(int(word[1]) + 22)
+
+        across_suggestions.sort(key=lambda x: x[1], reverse=True)
+        down_suggestions.sort(key=lambda x: x[1], reverse=True)
+
+        return across_suggestions, down_suggestions

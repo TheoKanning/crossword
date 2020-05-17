@@ -1,5 +1,5 @@
 import sys
-sys.path.append("..")
+#sys.path.append("..")
 from parameterized import parameterized
 import unittest
 from crossword import model

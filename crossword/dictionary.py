@@ -21,5 +21,5 @@ def search(word):
         text = f.read()
         words = [word.split(';') for word in re.findall(regex, text, re.MULTILINE)]
         words.sort(key=lambda x: x[1], reverse=True)
-        return words[:50]
+        return words[:1000]
 

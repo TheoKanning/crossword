@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScroll
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, QEvent
 
-from crossword import dictionary
 from crossword.model import Puzzle, Background, Mode
 from crossword import storage
 
@@ -131,8 +130,8 @@ class App(QWidget):
 
     def load_crossword(self):
         cross = None
-#        if path.exists(FILENAME):
-#            cross = storage.load(FILENAME)
+        if path.exists(FILENAME):
+            cross = storage.load(FILENAME)
         self.puzzle = Puzzle(cross)
         self.update_views()
 
@@ -159,13 +158,10 @@ class App(QWidget):
         self.update_suggestions()
 
     def update_suggestions(self):
-        (row, col) = self.puzzle.focus
-        # todo eww
-        word = self.puzzle.get_word(row, col, Mode.ACROSS)
-        suggestions = [': '.join(w) for w in dictionary.search(word)]
+        across, down = self.puzzle.get_suggestions()
+        suggestions = [': '.join(w) for w in across]
         self.across_suggestions.setText('\n'.join(suggestions))
-        word = self.puzzle.get_word(row, col, Mode.DOWN)
-        suggestions = [': '.join(w) for w in dictionary.search(word)]
+        suggestions = [': '.join(w) for w in down]
         self.down_suggestions.setText('\n'.join(suggestions))
 
 class CrosswordLineEdit(QLineEdit):
