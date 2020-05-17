@@ -161,3 +161,7 @@ class Puzzle:
         down_suggestions.sort(key=lambda x: x[1], reverse=True)
 
         return across_suggestions, down_suggestions
+
+    def print(self):
+        for row in self.squares:
+            print( ''.join([char if char != '' else ' ' for char in row]))
