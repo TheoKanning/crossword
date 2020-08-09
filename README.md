@@ -19,7 +19,7 @@ From the root directory:
 
 `pipenv shell`
 
-`python crossword/app.py`
+`python -m crossword`
 
 To run tests:
 
