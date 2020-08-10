@@ -1,19 +1,15 @@
 from collections import namedtuple
-from copy import deepcopy
 from enum import Enum
+from os import path
 
-from crossword import dictionary
-
-class Mode(Enum):
-    ACROSS = 0
-    DOWN = 1
+from crossword import dictionary, storage
+from crossword.grid import BLOCK, Grid, Mode
 
 class Background(Enum):
     WHITE = 0
     BLACK = 1
     YELLOW = 2
 
-BLOCK='.' # todo move this definition into one place
 
 Square = namedtuple('Square', ['text', 'background', 'focused'])
 
@@ -21,14 +17,15 @@ class Puzzle:
     """
     A class that holds all of the state for a crossword puzzle.
     """
-    def __init__(self, squares=None, filename=None):
+    def __init__(self, squares=None, filename=None, size=15):
         if squares:
-            assert len(squares) == len(squares[0])
+            self.grid = Grid(squares, size)
+        elif filename and path.exists(filename):
+            squares = storage.load(filename)
+            self.grid = Grid(squares)
         else:
-            squares = [['' for i in range(0,15)] for j in range(0,15)]
-        self.size = len(squares)
-        self.squares = deepcopy(squares)
-        self.filename = filename
+            self.grid = Grid(size=size)
+        self.size = self.grid.size
         self.focus = (0, 0)
         self.highlight = []
         self.mode = Mode.ACROSS
@@ -41,18 +38,21 @@ class Puzzle:
         self.focus = (row, col)
         self.highlight = self.get_highlighted_squares(row, col)
 
+    def save(self, filename):
+        storage.save(self.grid.squares, filename)
+
     def update_square(self, row, col, text):
         # maintain block symmetry
         if text == BLOCK:
-            self.squares[self.size - 1 - row][self.size - 1 - col] = BLOCK
-        elif self.squares[row][col] == BLOCK and text != BLOCK:
-            self.squares[self.size - 1 - row][self.size - 1 - col] = ''
-        self.squares[row][col] = text
+            self.grid.set_square((self.size - 1 - row, self.size - 1 - col), BLOCK)
+        elif self.grid.get_square((row, col)) == BLOCK and text != BLOCK:
+            self.grid.set_square((self.size - 1 - row, self.size - 1 - col), '')
+        self.grid.set_square((row,col), text)
         self.get_next_focus(text)
         self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
 
     def get_square(self, row, col):
-        text = self.squares[row][col]
+        text = self.grid.get_square((row, col))
         background = Background.WHITE
         if text == BLOCK:
             background = Background.BLACK
@@ -61,44 +61,10 @@ class Puzzle:
         focused = (row, col) == self.focus
         return Square(text, background, focused)
 
-    def get_word(self, row, col, mode):
-        """
-        Finds the word containing the given square
-        """
-        squares = self.get_highlighted_squares(row, col, mode)
-        chars = [self.squares[square[0]][square[1]] for square in squares]
-        return ''.join([char if char != '' else ' ' for char in chars])
-
     def get_highlighted_squares(self, row, col, mode=None):
-        """
-        Return the coordinates of all of the squares that form a continuous word
-        with the given square.
-        """
-        if self.squares[row][col] == BLOCK:
-            return []
-
         if not mode:
             mode = self.mode
-
-        highlighted = []
-        horizontal = mode is Mode.ACROSS
-        index = col if horizontal else row
-
-        for i in range(index, -1, -1):
-            square = (row, i) if horizontal else (i, col)
-            if self.squares[square[0]][square[1]] == BLOCK:
-                break
-            highlighted.append(square)
-
-        for i in range(index, self.size):
-            square = (row, i) if horizontal else (i, col)
-            if self.squares[square[0]][square[1]] == BLOCK:
-                break
-            highlighted.append(square)
-
-        highlighted = list(set(highlighted))
-        highlighted.sort()
-        return highlighted
+        return self.grid.get_word_squares((row, col), mode)
 
     def get_next_focus(self, text):
         """
@@ -133,15 +99,15 @@ class Puzzle:
         # returns suggestions for the focused square
         # (across, down), each is a list of tuples (word, score)
 
-        if self.squares[self.focus[0]][self.focus[1]] == BLOCK:
+        if self.grid.get_square(self.focus) == BLOCK:
             return ([], [])
 
         across_squares = self.get_highlighted_squares(self.focus[0], self.focus[1], Mode.ACROSS)
         across_index = across_squares.index(self.focus)
-        across_word = self.get_word(self.focus[0], self.focus[1], Mode.ACROSS)
+        across_word = self.grid.get_word(self.focus, Mode.ACROSS)
         down_squares = self.get_highlighted_squares(self.focus[0], self.focus[1], Mode.DOWN)
         down_index = down_squares.index(self.focus)
-        down_word = self.get_word(self.focus[0], self.focus[1], Mode.DOWN)
+        down_word = self.grid.get_word(self.focus, Mode.DOWN)
 
         across_suggestions = dictionary.search(across_word)
         down_suggestions = dictionary.search(down_word)
@@ -163,5 +129,4 @@ class Puzzle:
         return across_suggestions, down_suggestions
 
     def print(self):
-        for row in self.squares:
-            print( ''.join([char if char != '' else ' ' for char in row]))
+        self.grid.print()

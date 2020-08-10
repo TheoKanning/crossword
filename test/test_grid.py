@@ -12,9 +12,9 @@ squares = [
 
 class GridTests(unittest.TestCase):
 
-    def test_raise_error_if_size_doesnt_match(self):
+    def test_raise_error_if_not_squares(self):
         with self.assertRaises(AssertionError):
-            Grid([['',''],['','']], 3)
+            Grid([[''],['','']], 3)
 
     def test_create_empty_grid(self):
         grid = Grid(None, 2)

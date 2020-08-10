@@ -1,8 +1,7 @@
 import sys
 from parameterized import parameterized
 import unittest
-from crossword import model
-from crossword import storage
+from crossword import grid, model
 
 squares = [
            ['.','.','I','D','K'],
@@ -12,21 +11,29 @@ squares = [
            ['E','E','R','.','.']
    ]
 
-class CrosswordTests(unittest.TestCase):
+class ModelTests(unittest.TestCase):
 
-    def test_not_square(self):
-        with self.assertRaises(AssertionError):
-            model.Puzzle([[''],['']], 'filename')
+    def test_create_from_squares(self):
+        puzzle = model.Puzzle(squares)
+        self.assertEqual(puzzle.size, 5)
+
+    def test_create_from_file(self):
+        puzzle = model.Puzzle(filename="test/crossword.txt")
+        self.assertEqual(puzzle.size, 15)
+
+    def test_create_from_size(self):
+        puzzle = model.Puzzle(size=8)
+        self.assertEqual(puzzle.size, 8)
 
     @parameterized.expand([
-        [(0,0), model.Mode.ACROSS, []],
-        [(1,0), model.Mode.ACROSS, [(1,0), (1,1), (1,2), (1,3), (1,4)]],
-        [(2,0), model.Mode.ACROSS, [(2,0)]],
-        [(2,2), model.Mode.ACROSS, [(2,2), (2,3), (2,4)]],
-        [(0,0), model.Mode.DOWN, []],
-        [(1,0), model.Mode.DOWN, [(1,0), (2,0), (3,0), (4,0)]],
-        [(2,2), model.Mode.DOWN, [(0,2), (1,2), (2,2), (3,2), (4,2)]],
-        [(4,1), model.Mode.DOWN, [(3,1), (4,1)]],
+        [(0,0), grid.Mode.ACROSS, []],
+        [(1,0), grid.Mode.ACROSS, [(1,0), (1,1), (1,2), (1,3), (1,4)]],
+        [(2,0), grid.Mode.ACROSS, [(2,0)]],
+        [(2,2), grid.Mode.ACROSS, [(2,2), (2,3), (2,4)]],
+        [(0,0), grid.Mode.DOWN, []],
+        [(1,0), grid.Mode.DOWN, [(1,0), (2,0), (3,0), (4,0)]],
+        [(2,2), grid.Mode.DOWN, [(0,2), (1,2), (2,2), (3,2), (4,2)]],
+        [(4,1), grid.Mode.DOWN, [(3,1), (4,1)]],
         ])
     def test_update_highlighted_squares(self, focus, mode, highlight):
         puzzle = model.Puzzle(squares)
@@ -48,21 +55,6 @@ class CrosswordTests(unittest.TestCase):
         self.assertEqual(actual.text, text)
         self.assertEqual(actual.background, background)
         self.assertEqual(actual.focused, focused)
-
-    @parameterized.expand([
-        [ 8,  0, model.Mode.ACROSS, "E  ET"],
-        [11, 14, model.Mode.ACROSS, "LENT"],
-        [ 6,  5, model.Mode.ACROSS, "LASER"],
-        [ 8,  0, model.Mode.ACROSS, "E  ET"],
-        [ 7,  2, model.Mode.DOWN,"G ANDEUR"],
-        [ 8,  4, model.Mode.DOWN,  "CANTOR"],
-        ])
-    def test_get_word(self, row, col, mode, word):
-        crossword = storage.load("test/crossword.txt")
-        puzzle = model.Puzzle(crossword)
-        puzzle.mode = mode
-        actual = puzzle.get_word(row, col, mode)
-        self.assertEqual(actual, word)
 
     @parameterized.expand([
         [(0, 2), 'A', model.Mode.ACROSS, (0, 3)],

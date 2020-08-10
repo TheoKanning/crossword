@@ -1,14 +1,12 @@
 import re
 import sys
-from os import path
 
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
 from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScrollArea
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, QEvent
 
-from crossword.model import Puzzle, Background, Mode
-from crossword import storage
+from crossword.model import Puzzle, Background
 
 FILENAME='saved/crossword.txt'
 
@@ -33,9 +31,9 @@ class App(QWidget):
         self.top = 10
         self.width = 1000
         self.height = 480
-        self.puzzle = Puzzle()
+        self.puzzle = Puzzle(filename=FILENAME, size=15)
         self.init_ui()
-        self.load_crossword()
+        self.update_views()
 
     def init_ui(self):
         self.setWindowTitle(self.title)
@@ -128,15 +126,8 @@ class App(QWidget):
                 return True
         return False
 
-    def load_crossword(self):
-        cross = None
-        if path.exists(FILENAME):
-            cross = storage.load(FILENAME)
-        self.puzzle = Puzzle(cross)
-        self.update_views()
-
     def save_crossword(self):
-        cross = storage.save(self.puzzle.squares, FILENAME)
+        self.puzzle.save(FILENAME)
 
     def on_box_edited(self, name, text):
         coords = get_coords_from_name(name)

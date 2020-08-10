@@ -13,8 +13,8 @@ class Grid:
     """
     def __init__(self, squares=None, size=15):
         if squares:
-            assert len(squares) == size
-            assert len(squares[0]) == size
+            assert len(squares) == len(squares[0])
+            size = len(squares)
         else:
             squares = [['' for i in range(0,size)] for j in range(0,size)]
 
@@ -45,9 +45,6 @@ class Grid:
         if self.squares[row][col] == BLOCK:
             return []
 
-        if not mode:
-            mode = self.mode
-
         word_squares = []
         horizontal = mode is Mode.ACROSS
         index = col if horizontal else row
@@ -67,3 +64,7 @@ class Grid:
         word_squares = list(set(word_squares))
         word_squares.sort()
         return word_squares
+
+    def print(self):
+        for row in self.squares:
+            print( ''.join([char if char != '' else ' ' for char in row]))
