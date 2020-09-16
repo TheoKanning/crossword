@@ -9,7 +9,7 @@ def get_possible_words(grid, square, mode):
         sorted from best to worst
     """
     word = grid.get_word(square, mode)
-    return dictionary.search(word)
+    return [w[0] for w in dictionary.search(word)] # strip score from final result
 
 def get_next_target(grid, previous_direction):
     """ Returns the next square and direction to search.
@@ -52,7 +52,7 @@ def search(grid, previous_mode=Mode.ACROSS):
         return True # no more words to search
     for word in get_possible_words(grid, square, mode):
         grid.squares = deepcopy(original_squares) #todo this will be slow
-        result = set_word(grid, square, mode, word[0]) #words come as word/score tuples
+        result = set_word(grid, square, mode, word)
         if result == False:
             # word caused a contradiction, keep going to next word
             continue

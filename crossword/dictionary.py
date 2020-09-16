@@ -4,7 +4,7 @@ import time
 
 DICTIONARY="dictionary.txt"
 
-def search(word):
+def search(word, limit=1000):
     """
     Finds matching words in the dictionary.
     Input: Search word, using spaces for wildcards. e.g. 'letters', or ' et  r '
@@ -21,5 +21,13 @@ def search(word):
         text = f.read()
         words = [word.split(';') for word in re.findall(regex, text, re.MULTILINE)]
         words.sort(key=lambda x: x[1], reverse=True)
-        return words[:1000]
+        return words[:limit]
+
+def get_allowed_letters(word, index):
+    """
+    Returns a list of letters that can go at the specified index of the word
+    """
+    words = search(word)
+    return set([w[0][index] for w in words])
+
 

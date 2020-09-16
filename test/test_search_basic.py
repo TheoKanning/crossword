@@ -26,6 +26,20 @@ class BasicSearchTests(unittest.TestCase):
         self.assertEqual(target, (1,0))
         self.assertEqual(direction, Mode.DOWN)
 
+    @unittest.expectedFailure # not implemented yet
+    def test_get_possible_words(self):
+        squares = [
+                ['','','',''],
+                ['','','O',''],
+                ['','','T',''],
+                ['','','E','']
+        ]
+        grid = Grid(squares)
+        words = search.get_possible_words(grid, (0,0), Mode.ACROSS)
+        print(words)
+        print([w[0] for w in words])
+        self.assertEqual(words, ["bind"])
+
     def test_finish_easy_puzzle(self):
         squares = [
                 ['','I','R','D'],

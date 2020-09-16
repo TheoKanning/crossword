@@ -1,3 +1,4 @@
+from parameterized import parameterized
 import unittest
 from crossword import dictionary
 
@@ -26,6 +27,15 @@ class DictionaryTests(unittest.TestCase):
                 ['bird', '50']
             ]
         self.assertEqual(results, expected)
+
+    @parameterized.expand([
+        ["bi d", 2, {"n", "r"}],
+        ["xx   ", 3, set()],
+        ["a ple", 1, {"p"}]
+    ])
+    def test_allowed_letters(self, word, index, expected):
+        letters = dictionary.get_allowed_letters(word, index)
+        self.assertEqual(letters, expected)
 
 if __name__ == '__main__':
     unittest.main()
