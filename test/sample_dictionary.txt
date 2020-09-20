@@ -1,6 +1,8 @@
 apple;50
 bind;50
 bird;50
+date;50
+idea;50
 egret;50
 note;50
 word;50

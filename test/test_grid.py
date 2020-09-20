@@ -48,6 +48,11 @@ class GridTests(unittest.TestCase):
         grid.set_square(square, text)
         self.assertEqual(grid.get_square(square), expected)
 
+    def test_is_empty(self):
+        grid = Grid(squares, 5)
+        self.assertTrue(grid.is_empty((2, 2)))
+        self.assertFalse(grid.is_empty((0, 2)))
+
     @parameterized.expand([
         [(0,0), Mode.ACROSS, []],
         [(1,0), Mode.ACROSS, [(1,0), (1,1), (1,2), (1,3), (1,4)]],

@@ -4,13 +4,28 @@ from crossword.grid import Grid, Mode
 
 nodes_searched = 0
 
+    # todo generate these one at a time in case not all of them are needed?
+    # todo end early if no words are left
 def get_possible_words(grid, square, mode):
     """ Returns a list of all possible words for a given square and direction
         sorted from best to worst
     """
     word = grid.get_word(square, mode)
+    words = [w[0] for w in dictionary.search(word)] # strip point value
+    cross_mode = mode.opposite()
+    updated_squares = grid.get_word_squares(square, mode)
 
-    return [w[0] for w in dictionary.search(word)] # strip score from final result
+    # remove any words that would cause a contradiction later
+    for i, s in enumerate(updated_squares):
+        if not grid.is_empty(s):
+            continue # skip squares that are already filled in
+
+        cross_index = grid.get_word_squares(s, cross_mode).index(s)
+        cross_word = grid.get_word(s, cross_mode)
+        letters = dictionary.get_allowed_letters(cross_word, cross_index)
+        words = [w for w in words if w[i] in letters]
+
+    return words
 
 def get_next_target(grid, previous_direction):
     """ Returns the next square and direction to search.
@@ -20,7 +35,7 @@ def get_next_target(grid, previous_direction):
     direction = Mode.DOWN if previous_direction == Mode.ACROSS else Mode.ACROSS
     for i in range(grid.size):
         for j in range(grid.size):
-            if grid.get_square((i, j)) == '':
+            if grid.is_empty((i, j)):
                 return ((i, j), direction)
 
     return None, None

@@ -27,6 +27,9 @@ class Grid:
     def get_square(self, square):
         return self.squares[square[0]][square[1]]
 
+    def is_empty(self, square):
+        return self.get_square(square) == ''
+
     def set_square(self, square, text):
         assert len(text) <= 1
         self.squares[square[0]][square[1]] = text.upper()
