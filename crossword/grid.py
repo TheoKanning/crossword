@@ -5,6 +5,9 @@ class Mode(Enum):
     ACROSS = 0
     DOWN = 1
 
+    def opposite(self):
+        return Mode.ACROSS if self == Mode.DOWN else Mode.DOWN
+
 BLOCK = '.'
 
 class Grid:

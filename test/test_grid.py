@@ -12,7 +12,14 @@ squares = [
 
 class GridTests(unittest.TestCase):
 
-    def test_raise_error_if_not_squares(self):
+    def test_mode_toggle(self):
+        mode = Mode.ACROSS
+        self.assertEqual(mode.opposite(), Mode.DOWN)
+
+        mode = Mode.DOWN
+        self.assertEqual(mode.opposite(), Mode.ACROSS)
+
+    def test_raise_error_if_not_square(self):
         with self.assertRaises(AssertionError):
             Grid([[''],['','']], 3)
 

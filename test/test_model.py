@@ -25,6 +25,15 @@ class ModelTests(unittest.TestCase):
         puzzle = model.Puzzle(size=8)
         self.assertEqual(puzzle.size, 8)
 
+    def test_toggle(self):
+        puzzle = model.Puzzle(squares)
+        puzzle.mode = grid.Mode.ACROSS
+        puzzle.focus = (3, 1)
+
+        puzzle.toggle_orientation()
+        self.assertEqual(puzzle.mode, grid.Mode.DOWN)
+        self.assertEqual(puzzle.highlight, [(3, 1), (4, 1)])
+
     @parameterized.expand([
         [(0,0), grid.Mode.ACROSS, []],
         [(1,0), grid.Mode.ACROSS, [(1,0), (1,1), (1,2), (1,3), (1,4)]],

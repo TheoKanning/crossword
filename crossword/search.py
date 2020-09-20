@@ -9,6 +9,7 @@ def get_possible_words(grid, square, mode):
         sorted from best to worst
     """
     word = grid.get_word(square, mode)
+
     return [w[0] for w in dictionary.search(word)] # strip score from final result
 
 def get_next_target(grid, previous_direction):

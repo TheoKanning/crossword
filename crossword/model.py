@@ -31,7 +31,7 @@ class Puzzle:
         self.mode = Mode.ACROSS
 
     def toggle_orientation(self):
-        self.mode = Mode.DOWN if self.mode is Mode.ACROSS else Mode.ACROSS
+        self.mode = self.mode.opposite()
         self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
 
     def update_focus(self, row, col):
