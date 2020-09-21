@@ -6,13 +6,21 @@ import time
 DICTIONARY="dictionary.txt"
 # tracking this in a boolean is dumb, but it works for tests that use either dictionary
 initialized = False
+dictionaries = {}
 
 def create_dictionaries():
-    for n in range(3, 22):
-        with open(f"dictionary/{n}.txt", 'w') as f:
-            f.writelines('\n'.join(_search_file(' '*n, DICTIONARY)))
+    """
+    Break the big dicitonary file into a separate in-memory dictionary for each possible length
+    Sorts word by value here so they don't have to be sorted again later
+    """
+    global dictionaries, initialized
+    with open(DICTIONARY) as f:
+        text = f.read()
+        for n in range(3, 22):
+            words = _search_text(' '*n, text)
+            words.sort(key=lambda x: x.split(';')[1], reverse=True)
+            dictionaries[n] = '\n'.join(words)
 
-    global initialized
     initialized = True
 
 @lru_cache(maxsize=32)
@@ -26,15 +34,9 @@ def search(word, limit=1000):
         print("Creating dictionaries")
         create_dictionaries()
 
-    filename = f"dictionary/{len(word)}.txt"
-    if not path.exists(filename):
-        print(f"Could not find dictionary file:{filename}")
-        return []
-
     word = word.lower()
 
-    words = [word.split(';') for word in _search_file(word, filename)]
-    words.sort(key=lambda x: x[1], reverse=True)
+    words = [word.split(';') for word in _search_text(word, dictionaries[len(word)])]
     return words[:limit]
 
 def get_allowed_letters(word, index):
@@ -44,11 +46,10 @@ def get_allowed_letters(word, index):
     words = search(word)
     return set([w[0][index] for w in words])
 
-def _search_file(word, filename):
+def _search_text(word, text):
+    """
+    Finds rows matching the given word. text is a list of dictionary strings
+    """
     regex = '^' + word.replace(' ','.') + ";.*$" # replace wildcards, enforce start and stop
+    return re.findall(regex, text, re.MULTILINE)
 
-    with open(filename) as f:
-        text = f.read()
-        words = re.findall(regex, text, re.MULTILINE)
-
-    return words
