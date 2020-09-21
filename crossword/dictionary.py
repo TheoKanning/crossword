@@ -1,3 +1,4 @@
+from functools import lru_cache
 from os import path
 import re
 import time
@@ -14,6 +15,7 @@ def create_dictionaries():
     global initialized
     initialized = True
 
+@lru_cache(maxsize=32)
 def search(word, limit=1000):
     """
     Finds matching words in the dictionary.
