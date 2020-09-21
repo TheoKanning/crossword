@@ -57,7 +57,7 @@ def search(grid, previous_mode=Mode.ACROSS):
     """
     global nodes_searched
     nodes_searched += 1
-    if nodes_searched % 10 == 0:
+    if nodes_searched % 100 == 0:
         print(f"{nodes_searched} nodes searched")
         grid.print()
         print("")

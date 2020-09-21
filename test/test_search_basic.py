@@ -8,6 +8,7 @@ class BasicSearchTests(unittest.TestCase):
 
     def setUp(slef):
         dictionary.DICTIONARY="test/sample_dictionary.txt"
+        dictionary.create_dictionaries()
 
     def test_set_word(self):
         grid = Grid()

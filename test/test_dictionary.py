@@ -1,5 +1,7 @@
 from parameterized import parameterized
+import time
 import unittest
+
 from crossword import dictionary
 
 class DictionaryTests(unittest.TestCase):
@@ -36,7 +38,4 @@ class DictionaryTests(unittest.TestCase):
     def test_allowed_letters(self, word, index, expected):
         letters = dictionary.get_allowed_letters(word, index)
         self.assertEqual(letters, expected)
-
-if __name__ == '__main__':
-    unittest.main()
 

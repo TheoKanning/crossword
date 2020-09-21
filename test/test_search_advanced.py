@@ -11,6 +11,7 @@ class AdvancedSearchTests(unittest.TestCase):
 
     def setUp(self):
         dictionary.DICTIONARY="dictionary.txt" # use real dictionary
+        dictionary.create_dictionaries()
 
     def test_finish_easy_puzzle(self):
         squares = [
