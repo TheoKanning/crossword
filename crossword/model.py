@@ -2,7 +2,8 @@ from collections import namedtuple
 from enum import Enum
 from os import path
 
-from crossword import dictionary, storage
+from crossword import storage
+from crossword.dictionary import CrosswordDictionary
 from crossword.grid import BLOCK, Grid, Mode
 
 class Background(Enum):
@@ -17,7 +18,7 @@ class Puzzle:
     """
     A class that holds all of the state for a crossword puzzle.
     """
-    def __init__(self, squares=None, filename=None, size=15):
+    def __init__(self, squares=None, filename=None, size=15, dictionary_file="dictionary.txt"):
         if squares:
             self.grid = Grid(squares, size)
         elif filename and path.exists(filename):
@@ -29,6 +30,7 @@ class Puzzle:
         self.focus = (0, 0)
         self.highlight = []
         self.mode = Mode.ACROSS
+        self.dictionary = CrosswordDictionary(dictionary_file)
 
     def toggle_orientation(self):
         self.mode = self.mode.opposite()
@@ -109,8 +111,8 @@ class Puzzle:
         down_index = down_squares.index(self.focus)
         down_word = self.grid.get_word(self.focus, Mode.DOWN)
 
-        across_suggestions = dictionary.search(across_word)
-        down_suggestions = dictionary.search(down_word)
+        across_suggestions = self.dictionary.search(across_word)
+        down_suggestions = self.dictionary.search(down_word)
 
         across_letters = set([word[0][across_index] for word in across_suggestions])
         down_letters = set([word[0][down_index] for word in down_suggestions])

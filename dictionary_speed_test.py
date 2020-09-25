@@ -1,8 +1,8 @@
 import time
 
-from crossword import dictionary
+from crossword.dictionary import CrosswordDictionary
 
-dictionary.create_dictionaries()
+dictionary = CrosswordDictionary()
 start = time.time()
 query = "A   "
 count = 500

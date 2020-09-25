@@ -1,19 +1,19 @@
 import unittest
-from crossword import search
-from crossword import dictionary
+
+from crossword.dictionary import CrosswordDictionary
+from crossword.generate import Generator
 from crossword.grid import Grid, Mode
 
+# todo combine this with advanced tests and just ignore those if CI?
+class BasicGeneratorTests(unittest.TestCase):
 
-class BasicSearchTests(unittest.TestCase):
-
-    def setUp(slef):
-        dictionary.DICTIONARY="test/sample_dictionary.txt"
-        dictionary.create_dictionaries()
+    def setUp(self):
+        self.generator = Generator("test/sample_dictionary.txt")
 
     def test_set_word(self):
         grid = Grid()
         word = "ABCDEFGHIJKLMNO"
-        search.set_word(grid, (1,2), Mode.ACROSS, word)
+        self.generator.set_word(grid, (1,2), Mode.ACROSS, word)
         self.assertEqual(grid.get_word((1,2), Mode.ACROSS), word)
 
     def test_get_next_target(self):
@@ -23,7 +23,7 @@ class BasicSearchTests(unittest.TestCase):
                 ['X', '', '']
         ]
         grid = Grid(squares)
-        target, direction = search.get_next_target(grid, Mode.ACROSS)
+        target, direction = self.generator.get_next_target(grid, Mode.ACROSS)
         self.assertEqual(target, (1,0))
         self.assertEqual(direction, Mode.DOWN)
 
@@ -35,7 +35,7 @@ class BasicSearchTests(unittest.TestCase):
                 ['','','E','']
         ]
         grid = Grid(squares)
-        words = search.get_possible_words(grid, (0,0), Mode.ACROSS)
+        words = self.generator.get_possible_words(grid, (0,0), Mode.ACROSS)
         self.assertEqual(words, ["bind"])
 
     def test_get_possible_words_down(self):
@@ -46,6 +46,6 @@ class BasicSearchTests(unittest.TestCase):
                 ['','','','']
         ]
         grid = Grid(squares)
-        words = search.get_possible_words(grid, (0,0), Mode.DOWN)
+        words = self.generator.get_possible_words(grid, (0,0), Mode.DOWN)
         self.assertEqual(words, ["bind"])
 

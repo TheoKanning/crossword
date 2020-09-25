@@ -1,17 +1,17 @@
 import os
 import unittest
 
-from crossword import dictionary, search
+from crossword.generate import Generator
 from crossword.grid import Grid
 
 # advanced search tests that require a full dictionary. Can't be run by ci because the 
 # dictionary is not checked in
 @unittest.skipIf(os.getenv("CI"), "Dictionary not available on CI server")
-class AdvancedSearchTests(unittest.TestCase):
+class AdvancedGeneratorTests(unittest.TestCase):
 
     def setUp(self):
-        dictionary.DICTIONARY="dictionary.txt" # use real dictionary
-        dictionary.create_dictionaries()
+        # use default dictionary file, not available on CI
+        self.generator = Generator()
 
     def test_finish_easy_puzzle(self):
         squares = [
@@ -22,7 +22,7 @@ class AdvancedSearchTests(unittest.TestCase):
                 ['H','U','H','.','.']
         ]
         grid = Grid(squares)
-        result = search.search(grid)
+        result = self.generator.search(grid)
         self.assertTrue(result)
 
     def test_finish_two_step_puzzle(self):
@@ -34,5 +34,5 @@ class AdvancedSearchTests(unittest.TestCase):
                 ['H','U','H','.','.']
         ]
         grid = Grid(squares)
-        result = search.search(grid)
+        result = self.generator.search(grid)
         self.assertTrue(result)
