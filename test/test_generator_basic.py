@@ -23,7 +23,7 @@ class BasicGeneratorTests(unittest.TestCase):
                 ['X', '', '']
         ]
         grid = Grid(squares)
-        target, direction = self.generator.get_next_target(grid, Mode.ACROSS)
+        target, direction = self.generator.get_next_target(grid)
         self.assertEqual(target, (1,0))
         self.assertEqual(direction, Mode.DOWN)
 

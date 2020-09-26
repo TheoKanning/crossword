@@ -8,8 +8,6 @@ class Generator:
         self.dictionary = CrosswordDictionary(dictionary_file)
         self.nodes_searched = 0
 
-        # todo generate these one at a time in case not all of them are needed?
-        # todo end early if no words are left
     def get_possible_words(self, grid, square, mode):
         """ Returns a list of all possible words for a given square and direction
             sorted from best to worst
@@ -31,18 +29,28 @@ class Generator:
 
         return words
 
-    def get_next_target(self, grid, previous_direction):
-        """ Returns the next square and direction to search.
-        todo this needs to enforce a consistent order, or backtracking won't work as effectively
-        ideally this should finish a corner of the puzzle before moving on to other areas
+    def get_next_target(self, grid):
         """
-        direction = previous_direction.opposite()
+        Determines where to search next. Weighted combination that favors long words
+        and words with fewer letters remaining
+        """
+        square = None
+        mode = None
+        max_score = -1
+
         for i in range(grid.size):
             for j in range(grid.size):
                 if grid.is_empty((i, j)):
-                    return ((i, j), direction)
+                    for m in [Mode.ACROSS, Mode.DOWN]:
+                        temp_square = (i, j)
+                        word = grid.get_word(temp_square, m)
+                        score = len(word) + 5 * len(word.replace(' ',''))
+                        if score > max_score:
+                            square = temp_square
+                            mode = m
+                            max_score = score
 
-        return None, None
+        return square, mode
 
     def set_word(self, grid, square, mode, word):
         """Fills the given square with the given word
@@ -54,7 +62,7 @@ class Generator:
             if grid.get_square(square) != word[i]:
                 grid.set_square(square, word[i])
 
-    def search(self, grid, previous_mode=Mode.ACROSS):
+    def search(self, grid):
         """ Recursive function that picks a square then loops through all available words.
         Returns false if no words are valid, true if the puzzle is complete"
         """
@@ -65,16 +73,18 @@ class Generator:
             print("")
 
         original_squares = deepcopy(grid.squares)
-        square, mode = self.get_next_target(grid, previous_mode)
+        square, mode = self.get_next_target(grid)
+
         if square == None:
             return True # no more words to search
+
         for word in self.get_possible_words(grid, square, mode):
             grid.squares = deepcopy(original_squares) #todo this will be slow
             result = self.set_word(grid, square, mode, word)
             if result == False:
                 # word caused a contradiction, keep going to next word
                 continue
-            result = self.search(grid, mode)
+            result = self.search(grid)
             if result == True:
                 return True
 
