@@ -49,7 +49,6 @@ class Generator:
         todo see if it's possible to only use squares that are the start of a clue
         """
         word = word.upper()
-        opposite_mode = Mode.DOWN if mode == Mode.ACROSS else Mode.ACROSS
         squares = grid.get_word_squares(square, mode)
         for i, square in enumerate(squares):
             if grid.get_square(square) != word[i]:
@@ -60,8 +59,8 @@ class Generator:
         Returns false if no words are valid, true if the puzzle is complete"
         """
         self.nodes_searched += 1
-        if self.nodes_searched % 100 == 0:
-            print(f"{nodes_searched} nodes searched")
+        if self.nodes_searched % 1000 == 0:
+            print(f"{self.nodes_searched} nodes searched")
             grid.print()
             print("")
 

@@ -33,6 +33,7 @@ class CrosswordDictionary:
         words = [word.split(';') for word in self._search_text(word, self.dictionaries[len(word)])]
         return words[:limit]
 
+    @lru_cache(maxsize=32)
     def get_allowed_letters(self, word, index):
         """
         Returns a list of letters that can go at the specified index of the word
