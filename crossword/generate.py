@@ -7,6 +7,7 @@ class Generator:
     def __init__(self, dictionary):
         self.dictionary = dictionary
         self.nodes_searched = 0
+        self.used_words = []
 
     def get_possible_words(self, grid, square, mode):
         """ Returns a list of all possible words for a given square and direction
@@ -79,14 +80,19 @@ class Generator:
             return True # no more words to search
 
         for word in self.get_possible_words(grid, square, mode):
-            grid.squares = deepcopy(original_squares) #todo this will be slow
-            result = self.set_word(grid, square, mode, word)
-            if result == False:
-                # word caused a contradiction, keep going to next word
+            if word in self.used_words:
                 continue
+            else:
+                self.used_words.append(word)
+
+            grid.squares = deepcopy(original_squares) #todo this will be slow
+            self.set_word(grid, square, mode, word)
             result = self.search(grid)
+
             if result == True:
                 return True
+
+            self.used_words.pop()
 
         return False
 
