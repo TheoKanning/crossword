@@ -4,8 +4,8 @@ from crossword.grid import Grid, Mode
 
 class Generator:
 
-    def __init__(self, dictionary_file="dictionary.txt"):
-        self.dictionary = CrosswordDictionary(dictionary_file)
+    def __init__(self, dictionary):
+        self.dictionary = dictionary
         self.nodes_searched = 0
 
     def get_possible_words(self, grid, square, mode):

@@ -2,15 +2,16 @@ import argparse
 import sys
 import time
 
-from crossword import generate, grid, storage
+from crossword import dictionary, generate, grid, storage
 
 parser = argparse.ArgumentParser(description='Fill in missing crossword squares,')
 parser.add_argument('filename', help='Path to the uncompleted crossword file')
 filename = parser.parse_args().filename
 
+dictionary = dictionary.CrosswordDictionary(seed=0)
 grid = grid.Grid(storage.load(filename))
 start = time.time()
-generator = generate.Generator()
+generator = generate.Generator(dictionary)
 
 generator.search(grid)
 

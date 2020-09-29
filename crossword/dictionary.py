@@ -1,15 +1,16 @@
 from functools import lru_cache
 from os import path
+import random
 import re
 import time
 
 class CrosswordDictionary:
 
-    def __init__(self, filename="dictionary.txt"):
+    def __init__(self, filename="dictionary.txt", seed=None):
         self.dictionaries = {}
-        self.create_dictionaries(filename)
+        self.create_dictionaries(filename, seed)
 
-    def create_dictionaries(self, filename):
+    def create_dictionaries(self, filename, seed=None):
         """
         Break the dicitonary file into a separate in-memory dictionary for each possible length
         Sorts word by value here so they don't have to be sorted again later
@@ -18,6 +19,11 @@ class CrosswordDictionary:
             text = f.read()
             for n in range(3, 22):
                 words = self._search_text(' '*n, text)
+
+                if seed is not None:
+                    random.seed(seed)
+                    random.shuffle(words)
+
                 words.sort(key=lambda x: x.split(';')[1], reverse=True)
                 self.dictionaries[n] = '\n'.join(words)
 

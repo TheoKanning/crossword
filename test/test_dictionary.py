@@ -39,3 +39,12 @@ class DictionaryTests(unittest.TestCase):
         letters = self.dictionary.get_allowed_letters(word, index)
         self.assertEqual(letters, expected)
 
+    @parameterized.expand([
+        [None, ["bind", "bird", "date", "idea", "note", "word"]],
+        [1,    ["date", "idea", "word", "bind", "note", "bird"]],
+        [2,    ["date", "idea", "bird", "note", "word", "bind"]],
+    ])
+    def test_seeded_shuffling(self, seed, expected):
+        dictionary = CrosswordDictionary("test/sample_dictionary.txt", seed)
+        words = [w[0] for w in dictionary.search("    ")]
+        self.assertEqual(words, expected)
