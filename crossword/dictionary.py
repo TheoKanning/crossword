@@ -1,31 +1,38 @@
 from functools import lru_cache
-from os import path
+import os
 import random
 import re
 import time
 
 class CrosswordDictionary:
 
-    def __init__(self, filename="dictionary.txt", seed=None):
+    def __init__(self, directory="dictionaries/", seed=None):
         self.dictionaries = {}
-        self.create_dictionaries(filename, seed)
+        self.create_dictionaries(directory, seed)
 
-    def create_dictionaries(self, filename, seed=None):
+    def create_dictionaries(self, directory, seed=None):
         """
         Break the dicitonary file into a separate in-memory dictionary for each possible length
         Sorts word by value here so they don't have to be sorted again later
         """
-        with open(filename) as f:
-            text = f.read()
-            for n in range(3, 22):
-                words = self._search_text(' '*n, text)
+        files = os.listdir(directory)
+        contents = []
+        for filename in files:
+            with open(os.path.join(directory, filename)) as f:
+                contents.append(f.read())
 
-                if seed is not None:
-                    random.seed(seed)
-                    random.shuffle(words)
+        text = '\n'.join(contents)
 
-                words.sort(key=lambda x: x.split(';')[1], reverse=True)
-                self.dictionaries[n] = '\n'.join(words)
+        for n in range(3, 22):
+            words = self._search_text(' '*n, text)
+
+            if seed is not None:
+                random.seed(seed)
+                random.shuffle(words)
+
+            words.sort(key=lambda x: x.split(';')[1], reverse=True)
+            self.dictionaries[n] = '\n'.join(words)
+
 
     @lru_cache(maxsize=32)
     def search(self, word, limit=1000):

@@ -18,7 +18,7 @@ class Puzzle:
     """
     A class that holds all of the state for a crossword puzzle.
     """
-    def __init__(self, squares=None, filename=None, size=15, dictionary_file="dictionary.txt"):
+    def __init__(self, squares=None, filename=None, size=15, dictionary_path="dictionaries/"):
         if squares:
             self.grid = Grid(squares, size)
         elif filename and path.exists(filename):
@@ -30,7 +30,7 @@ class Puzzle:
         self.focus = (0, 0)
         self.highlight = []
         self.mode = Mode.ACROSS
-        self.dictionary = CrosswordDictionary(dictionary_file)
+        self.dictionary = CrosswordDictionary(dictionary_path)
 
     def toggle_orientation(self):
         self.mode = self.mode.opposite()

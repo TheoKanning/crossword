@@ -8,7 +8,7 @@ from crossword.grid import Grid, Mode
 class BasicGeneratorTests(unittest.TestCase):
 
     def setUp(self):
-        dictionary = CrosswordDictionary("test/sample_dictionary.txt")
+        dictionary = CrosswordDictionary("test/dictionaries")
         self.generator = Generator(dictionary)
 
     def test_set_word(self):

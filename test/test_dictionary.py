@@ -8,7 +8,7 @@ class DictionaryTests(unittest.TestCase):
 
     def setUp(self):
         # use test dictionary since the real one isn't checked in
-        self.dictionary = CrosswordDictionary("test/sample_dictionary.txt")
+        self.dictionary = CrosswordDictionary("test/dictionaries/")
 
     def test_single_response(self):
         results = self.dictionary.search("bird")
@@ -45,6 +45,6 @@ class DictionaryTests(unittest.TestCase):
         [2,    ["date", "idea", "bird", "note", "word", "bind"]],
     ])
     def test_seeded_shuffling(self, seed, expected):
-        dictionary = CrosswordDictionary("test/sample_dictionary.txt", seed)
+        dictionary = CrosswordDictionary("test/dictionaries/", seed)
         words = [w[0] for w in dictionary.search("    ")]
         self.assertEqual(words, expected)

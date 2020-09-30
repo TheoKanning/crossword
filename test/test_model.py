@@ -11,24 +11,24 @@ squares = [
            ['E','E','R','.','.']
    ]
 
-test_file = "test/sample_dictionary.txt"
+dictionary_path = "test/dictionaries/"
 
 class ModelTests(unittest.TestCase):
 
     def test_create_from_squares(self):
-        puzzle = model.Puzzle(squares, dictionary_file=test_file)
+        puzzle = model.Puzzle(squares, dictionary_path=dictionary_path)
         self.assertEqual(puzzle.size, 5)
 
     def test_create_from_file(self):
-        puzzle = model.Puzzle(filename="test/crossword.txt", dictionary_file=test_file)
+        puzzle = model.Puzzle(filename="test/crossword.txt", dictionary_path=dictionary_path)
         self.assertEqual(puzzle.size, 15)
 
     def test_create_from_size(self):
-        puzzle = model.Puzzle(size=8, dictionary_file=test_file)
+        puzzle = model.Puzzle(size=8, dictionary_path=dictionary_path)
         self.assertEqual(puzzle.size, 8)
 
     def test_toggle(self):
-        puzzle = model.Puzzle(squares, dictionary_file=test_file)
+        puzzle = model.Puzzle(squares, dictionary_path=dictionary_path)
         puzzle.mode = grid.Mode.ACROSS
         puzzle.focus = (3, 1)
 
@@ -47,7 +47,7 @@ class ModelTests(unittest.TestCase):
         [(4,1), grid.Mode.DOWN, [(3,1), (4,1)]],
         ])
     def test_update_highlighted_squares(self, focus, mode, highlight):
-        puzzle = model.Puzzle(squares, dictionary_file=test_file)
+        puzzle = model.Puzzle(squares, dictionary_path=dictionary_path)
         puzzle.mode = mode
         puzzle.update_focus(focus[0], focus[1])
         self.assertEqual(puzzle.focus, focus)
@@ -60,7 +60,7 @@ class ModelTests(unittest.TestCase):
         [(2,3), 'C', model.Background.YELLOW, True]
         ])
     def test_get_square_info(self, square, text, background, focused):
-        puzzle = model.Puzzle(squares, dictionary_file=test_file)
+        puzzle = model.Puzzle(squares, dictionary_path=dictionary_path)
         puzzle.update_focus(2, 3)
         actual = puzzle.get_square(square[0], square[1])
         self.assertEqual(actual.text, text)
@@ -79,14 +79,14 @@ class ModelTests(unittest.TestCase):
         [(3, 4),  '', model.Mode.DOWN, (2, 4)]
         ])
     def test_get_next_focus(self, current_focus, text, mode, new_focus):
-        puzzle = model.Puzzle(squares, dictionary_file=test_file)
+        puzzle = model.Puzzle(squares, dictionary_path=dictionary_path)
         puzzle.mode = mode
         puzzle.focus = current_focus
         puzzle.get_next_focus(text)
         self.assertEqual(puzzle.focus, new_focus)
 
     def test_update_square_block_symmetry(self):
-        puzzle = model.Puzzle(squares, dictionary_file=test_file)
+        puzzle = model.Puzzle(squares, dictionary_path=dictionary_path)
         puzzle.update_square(4, 0, model.BLOCK)
 
         self.assertEqual(puzzle.get_square(4, 0).text, model.BLOCK)
@@ -98,7 +98,7 @@ class ModelTests(unittest.TestCase):
         self.assertEqual(puzzle.get_square(0, 4).text, 'A')
 
     def test_movement(self):
-        puzzle = model.Puzzle(squares, dictionary_file=test_file)
+        puzzle = model.Puzzle(squares, dictionary_path=dictionary_path)
         puzzle.focus = (2, 2)
 
         puzzle.move_up()
