@@ -30,6 +30,9 @@ class Grid:
     def is_empty(self, square):
         return self.get_square(square) == ''
 
+    def is_block(self, square):
+        return self.get_square(square) == BLOCK
+
     def set_square(self, square, text):
         assert len(text) <= 1
         self.squares[square[0]][square[1]] = text.upper()
@@ -70,6 +73,26 @@ class Grid:
         word_squares = list(set(word_squares))
         word_squares.sort()
         return word_squares
+
+    def get_all_words(self):
+        """
+        Traverses the whole grid and returns a list containing the direction and start of each word.
+        """
+        words = []
+
+        for row in range(self.size):
+            for col in range(self.size):
+                if self.is_block((row, col)):
+                    continue
+
+                if col == 0 or self.is_block((row, col - 1)):
+                    words.append(((row, col), Mode.ACROSS))
+
+                if row == 0 or self.is_block((row - 1, col)):
+                    words.append(((row, col), Mode.DOWN))
+
+        return words
+
 
     def print(self):
         for row in self.squares:

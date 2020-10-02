@@ -53,6 +53,11 @@ class GridTests(unittest.TestCase):
         self.assertTrue(grid.is_empty((2, 2)))
         self.assertFalse(grid.is_empty((0, 2)))
 
+    def test_is_block(self):
+        grid = Grid(squares, 5)
+        self.assertTrue(grid.is_block((2, 1)))
+        self.assertFalse(grid.is_block((3, 3)))
+
     @parameterized.expand([
         [(0,0), Mode.ACROSS, []],
         [(1,0), Mode.ACROSS, [(1,0), (1,1), (1,2), (1,3), (1,4)]],
@@ -67,7 +72,6 @@ class GridTests(unittest.TestCase):
         grid = Grid(squares, 5)
         actual = grid.get_word_squares(square, mode)
         self.assertEqual(actual, expected)
-
 
     @parameterized.expand([
         [(0,0), Mode.ACROSS, ""],
@@ -84,4 +88,19 @@ class GridTests(unittest.TestCase):
         actual = grid.get_word(square, mode)
         self.assertEqual(actual, expected)
 
+    def test_get_all_words(self):
+        squares = [
+                ['.', '', '', '', ''],
+                ['', '', '', '', ''],
+                ['', '', '.', '', ''],
+                ['', '', '', '', ''],
+                ['', '', '', '', '.']
+            ]
+        grid = Grid(squares, 5)
+        words = grid.get_all_words()
 
+        across = [w[0] for w in words if w[1] == Mode.ACROSS]
+        self.assertEqual(across, [(0,1), (1,0), (2,0), (2,3), (3,0), (4,0)])
+
+        down = [w[0] for w in words if w[1] == Mode.DOWN]
+        self.assertEqual(down, [(0,1), (0,2), (0,3), (0,4), (1,0), (3,2)])
