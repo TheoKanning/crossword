@@ -24,8 +24,15 @@ class BasicGeneratorTests(unittest.TestCase):
                 ['X', '', '']
         ]
         grid = Grid(squares)
+        self.generator.unfilled_words = [
+                ((1,0), Mode.ACROSS),
+                ((2,0), Mode.ACROSS),
+                ((0,0), Mode.DOWN),
+                ((0,1), Mode.DOWN),
+                ((0,2), Mode.DOWN)
+                ]
         target, direction = self.generator.get_next_target(grid)
-        self.assertEqual(target, (1,0))
+        self.assertEqual(target, (0,0))
         self.assertEqual(direction, Mode.DOWN)
 
     def test_get_possible_words(self):
@@ -37,7 +44,7 @@ class BasicGeneratorTests(unittest.TestCase):
         ]
         grid = Grid(squares)
         words = self.generator.get_possible_words(grid, (0,0), Mode.ACROSS)
-        self.assertEqual(words, ["bind"])
+        self.assertEqual(words, [("bind", 50)])
 
     def test_get_possible_words_down(self):
         squares = [
@@ -48,5 +55,5 @@ class BasicGeneratorTests(unittest.TestCase):
         ]
         grid = Grid(squares)
         words = self.generator.get_possible_words(grid, (0,0), Mode.DOWN)
-        self.assertEqual(words, ["bind"])
+        self.assertEqual(words, [("bind", 50)])
 

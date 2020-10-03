@@ -13,9 +13,14 @@ grid = grid.Grid(storage.load(filename))
 start = time.time()
 generator = generate.Generator(dictionary)
 
-generator.search(grid)
+generator.optimize(grid, 530)
 
 grid.print()
+print(f"Total score: {generator.score}")
+for s, m in grid.get_all_words():
+    word = grid.get_word(s, m)
+    score = int(dictionary.search(word)[0][1])
+    print(f"{s} {m} {word}: {score}")
 seconds = time.time() - start
 nodes = generator.nodes_searched
 print(f"Generation took {seconds:.2f} seconds")
