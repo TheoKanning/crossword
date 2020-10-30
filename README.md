@@ -1,8 +1,7 @@
 # Crossword Creator
 GUI for making crossword puzzles. Built with python and pyqt5.
 
-[image]: ./image.png
-![sample][image]
+![sample](/assets/image.png)
 
 ## Features
 * Save and load in-progress crosswords
