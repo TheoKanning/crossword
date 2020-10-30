@@ -13,7 +13,7 @@ grid = grid.Grid(storage.load(filename))
 start = time.time()
 generator = generate.Generator(dictionary)
 
-generator.optimize(grid, 530)
+generator.optimize(grid)
 
 grid.print()
 print(f"Total score: {generator.score}")

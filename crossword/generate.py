@@ -36,27 +36,25 @@ class Generator:
 
     def get_next_target(self, grid):
         """
-        Determines where to search next. Weighted combination that favors long words
-        and words with fewer letters remaining
+        Determines where to search next. Sorts by length and letters filled in, then resorts
+        top 10 and picks the word with the fewest remaining possibilities.
         """
-        square = None
-        mode = None
-        max_score = -1
 
-        for s, m in self.unfilled_words:
-            word = grid.get_word(s, m)
-            if ' ' not in word:
-                # this word has been filled by other words
-                # return it immediately to update the used_words list and total score
-                return s, m
+        def score(target):
+            square, mode = target
+            word = grid.get_word(square, mode)
+            return len(word) + 5 * len(word.replace(' ',''))
 
-            score = len(word) + 5 * len(word.replace(' ',''))
-            if score > max_score:
-                 square = s
-                 mode = m
-                 max_score = score
+        def number_of_options(target):
+            square, mode = target
+            word = grid.get_word(square, mode)
+            return len(self.dictionary.search(word))
 
-        return square, mode
+        # re-order top 10 based on how many possibilities they have remaining, fewer first
+        self.unfilled_words.sort(reverse=True, key=score)
+        self.unfilled_words[0:10] = sorted(self.unfilled_words[0:10], key=number_of_options)
+
+        return self.unfilled_words[0]
 
     def set_word(self, grid, square, mode, word):
         """Fills the given square with the given word
@@ -97,13 +95,13 @@ class Generator:
             grid.print()
             print("")
 
-        original_squares = deepcopy(grid.squares)
-        square, mode = self.get_next_target(grid)
-
-        if square == None:
+        if not self.unfilled_words:
             if self.target_score is None:
                 self.target_score = self.score - 1
             return self.score # no more words to search
+
+        original_squares = deepcopy(grid.squares)
+        square, mode = self.get_next_target(grid)
 
         self.unfilled_words.remove((square, mode))
 
