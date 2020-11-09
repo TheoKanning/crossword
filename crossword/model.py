@@ -34,11 +34,11 @@ class Puzzle:
 
     def toggle_orientation(self):
         self.mode = self.mode.opposite()
-        self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
+        self.update_highlighted_squares()
 
     def update_focus(self, row, col):
         self.focus = (row, col)
-        self.highlight = self.get_highlighted_squares(row, col)
+        self.update_highlighted_squares()
 
     def save(self, filename):
         storage.save(self.grid.squares, filename)
@@ -46,12 +46,14 @@ class Puzzle:
     def update_square(self, row, col, text):
         # maintain block symmetry
         if text == BLOCK:
+            # add corresponding block
             self.grid.set_square((self.size - 1 - row, self.size - 1 - col), BLOCK)
         elif self.grid.get_square((row, col)) == BLOCK and text != BLOCK:
+            # remove corresponding block if this square used to be a block
             self.grid.set_square((self.size - 1 - row, self.size - 1 - col), '')
         self.grid.set_square((row,col), text)
         self.get_next_focus(text)
-        self.highlight = self.get_highlighted_squares(self.focus[0], self.focus[1])
+        self.update_highlighted_squares()
 
     def get_square(self, row, col):
         text = self.grid.get_square((row, col))
@@ -63,10 +65,8 @@ class Puzzle:
         focused = (row, col) == self.focus
         return Square(text, background, focused)
 
-    def get_highlighted_squares(self, row, col, mode=None):
-        if not mode:
-            mode = self.mode
-        return self.grid.get_word_squares((row, col), mode)
+    def update_highlighted_squares(self):
+        self.highlight = self.grid.get_word_squares(self.focus, self.mode)
 
     def get_next_focus(self, text):
         """
@@ -99,20 +99,22 @@ class Puzzle:
 
     def get_suggestions(self):
         # returns suggestions for the focused square
+        # prioritizes words that use a letter compatible with crossing words
         # (across, down), each is a list of tuples (word, score)
 
         if self.grid.get_square(self.focus) == BLOCK:
             return ([], [])
 
-        across_squares = self.get_highlighted_squares(self.focus[0], self.focus[1], Mode.ACROSS)
+        across_squares = self.grid.get_word_squares(self.focus, Mode.ACROSS)
         across_index = across_squares.index(self.focus)
         across_word = self.grid.get_word(self.focus, Mode.ACROSS)
-        down_squares = self.get_highlighted_squares(self.focus[0], self.focus[1], Mode.DOWN)
+        down_squares = self.grid.get_word_squares(self.focus, Mode.DOWN)
         down_index = down_squares.index(self.focus)
         down_word = self.grid.get_word(self.focus, Mode.DOWN)
 
-        across_suggestions = self.dictionary.search(across_word)
-        down_suggestions = self.dictionary.search(down_word)
+        # copy to avoid modifying cached lists
+        across_suggestions = self.dictionary.search(across_word).copy()
+        down_suggestions = self.dictionary.search(down_word).copy()
 
         across_letters = set([word[0][across_index] for word in across_suggestions])
         down_letters = set([word[0][down_index] for word in down_suggestions])
