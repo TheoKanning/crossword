@@ -23,5 +23,6 @@ for s, m in grid.get_all_words():
     print(f"{s} {m} {word}: {score}")
 seconds = time.time() - start
 nodes = generator.nodes_searched
+
 print(f"Generation took {seconds:.2f} seconds")
 print(f"Searched {nodes} nodes, {nodes/seconds:.2f} nodes/sec")
