@@ -6,7 +6,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
 from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScrollArea
 
-from crossword.model import Puzzle, Background
+from crossword.model import Model, Background
 
 FILENAME = 'saved/crossword.txt'
 
@@ -35,7 +35,7 @@ class App(QWidget):
         self.top = 10
         self.width = 1000
         self.height = 480
-        self.puzzle = Puzzle(filename=FILENAME, size=15)
+        self.model = Model(filename=FILENAME, size=15)
         self.init_ui()
         self.update_views()
 
@@ -111,7 +111,7 @@ class App(QWidget):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Shift:
-            self.puzzle.toggle_orientation()
+            self.model.toggle_orientation()
             self.update_views()
 
     def eventFilter(self, obj, event):
@@ -119,41 +119,41 @@ class App(QWidget):
         if event.type() == QEvent.KeyPress:
             if event.key() in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Right, Qt.Key_Left]:
                 if event.key() == Qt.Key_Up:
-                    self.puzzle.move_up()
+                    self.model.move_up()
                 elif event.key() == Qt.Key_Down:
-                    self.puzzle.move_down()
+                    self.model.move_down()
                 elif event.key() == Qt.Key_Left:
-                    self.puzzle.move_left()
+                    self.model.move_left()
                 elif event.key() == Qt.Key_Right:
-                    self.puzzle.move_right()
+                    self.model.move_right()
                 self.update_views()
                 return True
         return False
 
     def save_crossword(self):
-        self.puzzle.save(FILENAME)
+        self.model.save(FILENAME)
 
     def on_box_edited(self, name, text):
         coords = get_coords_from_name(name)
-        self.puzzle.update_square(coords[0], coords[1], text)
+        self.model.update_square(coords[0], coords[1], text)
         self.update_views()
 
     def on_box_focused(self, name):
         row, col = get_coords_from_name(name)
-        self.puzzle.update_focus(row, col)
+        self.model.update_focus(row, col)
         self.update_views()
 
     def update_views(self):
-        for row in range(0, self.puzzle.size):
-            for col in range(0, self.puzzle.size):
-                square = self.puzzle.get_square(row, col)
+        for row in range(0, self.model.size):
+            for col in range(0, self.model.size):
+                square = self.model.get_square(row, col)
                 name = get_box_name(row, col)
                 self.grid_group_box.findChild(CrosswordLineEdit, name).update(square)
 
         self.update_suggestions()
 
     def update_suggestions(self):
-        across, down = self.puzzle.get_suggestions()
+        across, down = self.model.get_suggestions()
         suggestions = [': '.join(w) for w in across]
         self.across_suggestions.setText('\n'.join(suggestions))
         suggestions = [': '.join(w) for w in down]

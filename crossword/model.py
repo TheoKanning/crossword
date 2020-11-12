@@ -16,9 +16,9 @@ class Background(Enum):
 Square = namedtuple('Square', ['text', 'background', 'focused'])
 
 
-class Puzzle:
+class Model:
     """
-    A class that holds all of the state for a crossword puzzle.
+    A class that holds all of the UI state for a crossword puzzle.
     """
 
     def __init__(self, squares=None, filename=None, size=15, dictionary_path="dictionaries/"):
