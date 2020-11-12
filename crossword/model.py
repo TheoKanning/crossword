@@ -106,7 +106,7 @@ class Model:
         # (across, down), each is a list of tuples (word, score)
 
         if self.grid.get_square(self.focus) == BLOCK:
-            return ([], [])
+            return [], []
 
         across_squares = self.grid.get_word_squares(self.focus, Mode.ACROSS)
         across_index = across_squares.index(self.focus)

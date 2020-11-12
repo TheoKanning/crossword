@@ -12,7 +12,7 @@ class CrosswordDictionary:
 
     def create_dictionaries(self, directory, seed=None):
         """
-        Break the dicitonary file into a separate in-memory dictionary for each possible length
+        Break the dictionary file into a separate in-memory dictionary for each possible length
         Sorts word by value here so they don't have to be sorted again later
         """
         files = os.listdir(directory)
@@ -40,9 +40,12 @@ class CrosswordDictionary:
         Input: Search word, using spaces for wildcards. e.g. 'letters', or ' et  r '
         Returns (word, score), sorted highest to lowest. Limited to 20 words.
         """
+        if len(word) < 3 or len(word) > 22:
+            return []
+
         word = word.lower()
 
-        words = [word.split(';') for word in self._search_text(word, self.dictionaries[len(word)])]
+        words = [w.split(';') for w in self._search_text(word, self.dictionaries[len(word)])]
         return words[:limit]
 
     @lru_cache(maxsize=32)
@@ -59,3 +62,11 @@ class CrosswordDictionary:
         """
         regex = '^' + word.replace(' ', '.') + ";.*$"  # replace wildcards, enforce start and stop
         return re.findall(regex, text, re.MULTILINE)
+
+
+if __name__ == "__main__":
+    import sys
+    query = sys.argv[1]
+    dictionary = CrosswordDictionary()
+    for word in dictionary.search(query):
+        print(word)

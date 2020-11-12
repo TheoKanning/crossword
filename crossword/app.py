@@ -51,13 +51,13 @@ class App(QWidget):
         down_group_box, down_suggestions = self.create_suggestions_layout("Down")
         self.down_suggestions = down_suggestions
 
-        windowLayout = QHBoxLayout()
-        windowLayout.addWidget(self.grid_group_box)
-        windowLayout.addWidget(across_group_box)
-        windowLayout.addWidget(down_group_box)
-        windowLayout.addWidget(self.options_group_box)
+        window_layout = QHBoxLayout()
+        window_layout.addWidget(self.grid_group_box)
+        window_layout.addWidget(across_group_box)
+        window_layout.addWidget(down_group_box)
+        window_layout.addWidget(self.options_group_box)
 
-        self.setLayout(windowLayout)
+        self.setLayout(window_layout)
 
         self.show()
 
@@ -175,7 +175,7 @@ class CrosswordLineEdit(QLineEdit):
         super().focusInEvent(e)
 
     def on_text_changed(self, s):
-        pattern = re.compile('[^a-zA-z\.]')  # remove anything except letters and periods
+        pattern = re.compile('[^a-zA-Z\.]')  # remove anything except letters and periods
         s = pattern.sub('', s)
         if len(s) > 1:
             s = s[-1]

@@ -113,7 +113,7 @@ class Generator:
             self.used_words.append(word)
             self.score += word_score
 
-            grid.squares = deepcopy(original_squares)  # todo this will be slow
+            grid.squares = deepcopy(original_squares)
             self.set_word(grid, square, mode, word)
             new_score = self.search(grid)
 
