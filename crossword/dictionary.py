@@ -4,7 +4,7 @@ import re
 from functools import lru_cache
 
 
-class CrosswordDictionary:
+class Dictionary:
 
     def __init__(self, directory="dictionaries/", seed=None):
         self.dictionaries = {}
@@ -67,6 +67,6 @@ class CrosswordDictionary:
 if __name__ == "__main__":
     import sys
     query = sys.argv[1]
-    dictionary = CrosswordDictionary()
+    dictionary = Dictionary()
     for word in dictionary.search(query):
         print(word)

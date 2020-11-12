@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(description='Fill in missing crossword squares,
 parser.add_argument('filename', help='Path to the uncompleted crossword file')
 filename = parser.parse_args().filename
 
-dictionary = dictionary.CrosswordDictionary(seed=0)
+dictionary = dictionary.Dictionary(seed=0)
 grid = grid.Grid(storage.load(filename))
 start = time.time()
 generator = generate.Generator(dictionary)

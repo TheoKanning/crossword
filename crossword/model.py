@@ -3,7 +3,7 @@ from enum import Enum
 from os import path
 
 from crossword import storage
-from crossword.dictionary import CrosswordDictionary
+from crossword.dictionary import Dictionary
 from crossword.grid import BLOCK, Grid, Mode
 
 
@@ -33,7 +33,7 @@ class Model:
         self.focus = (0, 0)
         self.highlight = []
         self.mode = Mode.ACROSS
-        self.dictionary = CrosswordDictionary(dictionary_path)
+        self.dictionary = Dictionary(dictionary_path)
 
     def toggle_orientation(self):
         self.mode = self.mode.opposite()

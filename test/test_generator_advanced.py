@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from crossword.dictionary import CrosswordDictionary
+from crossword.dictionary import Dictionary
 from crossword.generate import Generator
 from crossword.grid import Grid
 
@@ -13,7 +13,7 @@ class AdvancedGeneratorTests(unittest.TestCase):
 
     def setUp(self):
         # use default dictionary file, not available on CI
-        dictionary = CrosswordDictionary()
+        dictionary = Dictionary()
         self.generator = Generator(dictionary)
 
     def test_finish_easy_puzzle(self):

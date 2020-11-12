@@ -1,6 +1,6 @@
 import unittest
 
-from crossword.dictionary import CrosswordDictionary
+from crossword.dictionary import Dictionary
 from crossword.generate import Generator
 from crossword.grid import Grid, Mode
 
@@ -8,7 +8,7 @@ from crossword.grid import Grid, Mode
 class BasicGeneratorTests(unittest.TestCase):
 
     def setUp(self):
-        dictionary = CrosswordDictionary("test/dictionaries")
+        dictionary = Dictionary("test/dictionaries")
         self.generator = Generator(dictionary)
 
     def test_set_word(self):

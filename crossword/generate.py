@@ -1,4 +1,5 @@
 from copy import deepcopy
+import time
 
 
 class Generator:
@@ -86,7 +87,8 @@ class Generator:
         Returns false if no words are valid, true if the puzzle is complete"
         """
         self.nodes_searched += 1
-        if self.nodes_searched % 10 == 0:
+        time.sleep(0.1)
+        if self.nodes_searched % 1 == 0:
             print(f"{self.nodes_searched} nodes searched")
             print(f"Score:{self.score}")
             grid.print()
