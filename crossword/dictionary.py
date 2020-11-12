@@ -1,8 +1,8 @@
-from functools import lru_cache
 import os
 import random
 import re
-import time
+from functools import lru_cache
+
 
 class CrosswordDictionary:
 
@@ -24,7 +24,7 @@ class CrosswordDictionary:
         text = '\n'.join(contents)
 
         for n in range(3, 22):
-            words = self._search_text(' '*n, text)
+            words = self._search_text(' ' * n, text)
 
             if seed is not None:
                 random.seed(seed)
@@ -32,7 +32,6 @@ class CrosswordDictionary:
 
             words.sort(key=lambda x: x.split(';')[1], reverse=True)
             self.dictionaries[n] = '\n'.join(words)
-
 
     @lru_cache(maxsize=32)
     def search(self, word, limit=1000):
@@ -58,6 +57,5 @@ class CrosswordDictionary:
         """
         Finds rows matching the given word. text is a list of dictionary strings
         """
-        regex = '^' + word.replace(' ','.') + ";.*$" # replace wildcards, enforce start and stop
+        regex = '^' + word.replace(' ', '.') + ";.*$"  # replace wildcards, enforce start and stop
         return re.findall(regex, text, re.MULTILINE)
-

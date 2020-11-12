@@ -1,6 +1,7 @@
 from copy import deepcopy
 from enum import Enum
 
+
 class Mode(Enum):
     ACROSS = 0
     DOWN = 1
@@ -8,18 +9,21 @@ class Mode(Enum):
     def opposite(self):
         return Mode.ACROSS if self == Mode.DOWN else Mode.DOWN
 
+
 BLOCK = '.'
+
 
 class Grid:
     """
     A class that holds the letters and blocks of a crossword grid.
     """
+
     def __init__(self, squares=None, size=15):
         if squares:
             assert len(squares) == len(squares[0])
             size = len(squares)
         else:
-            squares = [['' for i in range(0,size)] for j in range(0,size)]
+            squares = [['' for i in range(0, size)] for j in range(0, size)]
 
         self.squares = deepcopy(squares)
         self.size = size
@@ -93,7 +97,6 @@ class Grid:
 
         return words
 
-
     def print(self):
         for row in self.squares:
-            print( ''.join([char if char != '' else ' ' for char in row]))
+            print(''.join([char if char != '' else ' ' for char in row]))

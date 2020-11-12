@@ -1,8 +1,9 @@
-from parameterized import parameterized
-import time
 import unittest
 
+from parameterized import parameterized
+
 from crossword.dictionary import CrosswordDictionary
+
 
 class DictionaryTests(unittest.TestCase):
 
@@ -25,9 +26,9 @@ class DictionaryTests(unittest.TestCase):
     def test_multiple_responses(self):
         results = self.dictionary.search("bi d")
         expected = [
-                ['bind', '50'],
-                ['bird', '50']
-            ]
+            ['bind', '50'],
+            ['bird', '50']
+        ]
         self.assertEqual(results, expected)
 
     @parameterized.expand([
@@ -41,8 +42,8 @@ class DictionaryTests(unittest.TestCase):
 
     @parameterized.expand([
         [None, ["bind", "bird", "date", "idea", "note", "word"]],
-        [1,    ["date", "idea", "word", "bind", "note", "bird"]],
-        [2,    ["date", "idea", "bird", "note", "word", "bind"]],
+        [1, ["date", "idea", "word", "bind", "note", "bird"]],
+        [2, ["date", "idea", "bird", "note", "word", "bind"]],
     ])
     def test_seeded_shuffling(self, seed, expected):
         dictionary = CrosswordDictionary("test/dictionaries/", seed)

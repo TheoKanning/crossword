@@ -6,6 +6,7 @@ from crossword import storage
 from crossword.dictionary import CrosswordDictionary
 from crossword.grid import BLOCK, Grid, Mode
 
+
 class Background(Enum):
     WHITE = 0
     BLACK = 1
@@ -14,10 +15,12 @@ class Background(Enum):
 
 Square = namedtuple('Square', ['text', 'background', 'focused'])
 
+
 class Puzzle:
     """
     A class that holds all of the state for a crossword puzzle.
     """
+
     def __init__(self, squares=None, filename=None, size=15, dictionary_path="dictionaries/"):
         if squares:
             self.grid = Grid(squares, size)
@@ -51,7 +54,7 @@ class Puzzle:
         elif self.grid.get_square((row, col)) == BLOCK and text != BLOCK:
             # remove corresponding block if this square used to be a block
             self.grid.set_square((self.size - 1 - row, self.size - 1 - col), '')
-        self.grid.set_square((row,col), text)
+        self.grid.set_square((row, col), text)
         self.get_next_focus(text)
         self.update_highlighted_squares()
 

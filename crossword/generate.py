@@ -1,15 +1,13 @@
 from copy import deepcopy
 
-from crossword.dictionary import CrosswordDictionary
-from crossword.grid import Grid, Mode
 
 class Generator:
 
     def __init__(self, dictionary):
         self.dictionary = dictionary
         self.nodes_searched = 0
-        self.used_words = []
-        self.unfilled_words = []
+        self.used_words = []  # list of used words to prevent re-using words
+        self.unfilled_words = []  # list of ((row, col) mode)
         self.score = 0
         self.target_score = 0
 
@@ -25,7 +23,7 @@ class Generator:
         # remove any words that would cause a contradiction later
         for i, s in enumerate(updated_squares):
             if not grid.is_empty(s):
-                continue # skip squares that are already filled in
+                continue  # skip squares that are already filled in
 
             cross_index = grid.get_word_squares(s, cross_mode).index(s)
             cross_word = grid.get_word(s, cross_mode)
@@ -43,7 +41,7 @@ class Generator:
         def score(target):
             square, mode = target
             word = grid.get_word(square, mode)
-            return len(word) + 5 * len(word.replace(' ',''))
+            return len(word) + 5 * len(word.replace(' ', ''))
 
         def number_of_options(target):
             square, mode = target
@@ -68,7 +66,7 @@ class Generator:
 
     def optimize(self, grid, target_score=None):
         self.nodes_searched = 0
-        self.words_used = []
+        self.used_words = []
         self.unfilled_words = []
         self.score = 0
         self.target_score = target_score
@@ -78,9 +76,8 @@ class Generator:
             if ' ' in word:
                 self.unfilled_words.append((square, mode))
             else:
-                self.words_used.append(word)
+                self.used_words.append(word)
                 self.score += int(self.dictionary.search(word)[0][1])
-
 
         return self.search(grid)
 
@@ -98,7 +95,7 @@ class Generator:
         if not self.unfilled_words:
             if self.target_score is None:
                 self.target_score = self.score - 1
-            return self.score # no more words to search
+            return self.score  # no more words to search
 
         original_squares = deepcopy(grid.squares)
         square, mode = self.get_next_target(grid)
@@ -116,7 +113,7 @@ class Generator:
             self.used_words.append(word)
             self.score += word_score
 
-            grid.squares = deepcopy(original_squares) #todo this will be slow
+            grid.squares = deepcopy(original_squares)  # todo this will be slow
             self.set_word(grid, square, mode, word)
             new_score = self.search(grid)
 
@@ -129,4 +126,3 @@ class Generator:
         self.unfilled_words.append((square, mode))
 
         return self.score
-

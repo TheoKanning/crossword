@@ -8,6 +8,7 @@ def save(crossword, filename):
             f.write(''.join([char if char != '' else ' ' for char in line]))
             f.write('\n')
 
+
 def load(filename):
     """
     Loads a crossword stored in the given txt file and returns it as an array

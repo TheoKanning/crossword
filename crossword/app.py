@@ -1,14 +1,15 @@
 import re
 import sys
 
-from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout, QDialog
-from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScrollArea
-from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, QEvent
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScrollArea
 
 from crossword.model import Puzzle, Background
 
-FILENAME='saved/crossword.txt'
+FILENAME = 'saved/crossword.txt'
+
 
 def start_app():
     app = QApplication(sys.argv)
@@ -16,11 +17,14 @@ def start_app():
     ex = App()
     sys.exit(app.exec_())
 
+
 def get_box_name(row, col):
     return "{}_{}".format(row, col)
 
+
 def get_coords_from_name(name):
     return [int(i) for i in name.split('_')]
+
 
 class App(QWidget):
 
@@ -64,8 +68,8 @@ class App(QWidget):
         layout.setSpacing(0)
         layout.setRowStretch(0, 0)
 
-        for row in range(0,15):
-            for col in range(0,15):
+        for row in range(0, 15):
+            for col in range(0, 15):
                 text_box = CrosswordLineEdit()
                 text_box.setObjectName(get_box_name(row, col))
                 text_box.edited.connect(self.on_box_edited)
@@ -85,7 +89,7 @@ class App(QWidget):
 
         self.options_group_box.setLayout(layout)
 
-# todo put this into a separate class?
+    # todo put this into a separate class?
     def create_suggestions_layout(self, label_text):
         suggestion_box = QGroupBox()
         layout = QVBoxLayout()
@@ -155,9 +159,9 @@ class App(QWidget):
         suggestions = [': '.join(w) for w in down]
         self.down_suggestions.setText('\n'.join(suggestions))
 
-class CrosswordLineEdit(QLineEdit):
 
-    edited = pyqtSignal(str, str) # name, text
+class CrosswordLineEdit(QLineEdit):
+    edited = pyqtSignal(str, str)  # name, text
     focused = pyqtSignal(str)
 
     def __init__(self, *args):
@@ -171,7 +175,7 @@ class CrosswordLineEdit(QLineEdit):
         super().focusInEvent(e)
 
     def on_text_changed(self, s):
-        pattern = re.compile('[^a-zA-z\.]') # remove anything except letters and periods
+        pattern = re.compile('[^a-zA-z\.]')  # remove anything except letters and periods
         s = pattern.sub('', s)
         if len(s) > 1:
             s = s[-1]
@@ -192,4 +196,3 @@ class CrosswordLineEdit(QLineEdit):
         p = self.palette()
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
-

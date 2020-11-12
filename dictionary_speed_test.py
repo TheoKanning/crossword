@@ -11,5 +11,4 @@ for i in range(0, count):
     dictionary.search.cache_clear()
 
 seconds = time.time() - start
-print(f"{count/seconds:.2f} searches/sec")
-
+print(f"{count / seconds:.2f} searches/sec")

@@ -1,5 +1,4 @@
 import argparse
-import sys
 import time
 
 from crossword import dictionary, generate, grid, storage
@@ -25,4 +24,4 @@ seconds = time.time() - start
 nodes = generator.nodes_searched
 
 print(f"Generation took {seconds:.2f} seconds")
-print(f"Searched {nodes} nodes, {nodes/seconds:.2f} nodes/sec")
+print(f"Searched {nodes} nodes, {nodes / seconds:.2f} nodes/sec")
