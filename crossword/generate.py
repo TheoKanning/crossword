@@ -57,7 +57,6 @@ class Generator:
 
     def set_word(self, grid, square, mode, word):
         """Fills the given square with the given word
-        todo see if it's possible to only use squares that are the start of a clue
         """
         word = word.upper()
         squares = grid.get_word_squares(square, mode)
@@ -87,8 +86,7 @@ class Generator:
         Returns false if no words are valid, true if the puzzle is complete"
         """
         self.nodes_searched += 1
-        time.sleep(0.1)
-        if self.nodes_searched % 1 == 0:
+        if self.nodes_searched % 10 == 0:
             print(f"{self.nodes_searched} nodes searched")
             print(f"Score:{self.score}")
             grid.print()

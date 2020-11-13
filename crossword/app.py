@@ -1,12 +1,12 @@
-import re
 import sys
 
-from PyQt5.QtCore import Qt, pyqtSignal, QEvent
+from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
-from PyQt5.QtWidgets import QLineEdit, QGridLayout, QVBoxLayout, QLabel, QScrollArea
+from PyQt5.QtWidgets import QGridLayout, QVBoxLayout
 
-from crossword.model import Model, Background
+from crossword.model import Model
+from crossword.view import CrosswordLineEdit, SuggestionBox
 
 FILENAME = 'saved/crossword.txt'
 
@@ -22,6 +22,7 @@ def get_box_name(row, col):
     return "{}_{}".format(row, col)
 
 
+# todo add coords to signals and get rid of this?
 def get_coords_from_name(name):
     return [int(i) for i in name.split('_')]
 
@@ -46,15 +47,13 @@ class App(QWidget):
         self.create_grid_layout()
         self.create_options_layout()
 
-        across_group_box, across_suggestions = self.create_suggestions_layout("Across")
-        self.across_suggestions = across_suggestions
-        down_group_box, down_suggestions = self.create_suggestions_layout("Down")
-        self.down_suggestions = down_suggestions
+        self.across_suggestions = SuggestionBox("Across")
+        self.down_suggestions = SuggestionBox("Down")
 
         window_layout = QHBoxLayout()
         window_layout.addWidget(self.grid_group_box)
-        window_layout.addWidget(across_group_box)
-        window_layout.addWidget(down_group_box)
+        window_layout.addWidget(self.across_suggestions)
+        window_layout.addWidget(self.down_suggestions)
         window_layout.addWidget(self.options_group_box)
 
         self.setLayout(window_layout)
@@ -88,26 +87,6 @@ class App(QWidget):
         layout.addWidget(save)
 
         self.options_group_box.setLayout(layout)
-
-    # todo put this into a separate class?
-    def create_suggestions_layout(self, label_text):
-        suggestion_box = QGroupBox()
-        layout = QVBoxLayout()
-
-        label = QLabel(label_text)
-        layout.addWidget(label)
-
-        scroll = QScrollArea()
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setWidgetResizable(True)
-
-        suggestions = QLabel()
-        scroll.setWidget(suggestions)
-        layout.addWidget(scroll)
-
-        suggestion_box.setLayout(layout)
-        return suggestion_box, suggestions
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Shift:
@@ -154,45 +133,6 @@ class App(QWidget):
 
     def update_suggestions(self):
         across, down = self.model.get_suggestions()
-        suggestions = [': '.join(w) for w in across]
-        self.across_suggestions.setText('\n'.join(suggestions))
-        suggestions = [': '.join(w) for w in down]
-        self.down_suggestions.setText('\n'.join(suggestions))
+        self.across_suggestions.update_suggestions(across)
+        self.down_suggestions.update_suggestions(down)
 
-
-class CrosswordLineEdit(QLineEdit):
-    edited = pyqtSignal(str, str)  # name, text
-    focused = pyqtSignal(str)
-
-    def __init__(self, *args):
-        QLineEdit.__init__(self, *args)
-        self.textEdited.connect(self.on_text_changed)
-        self.setAutoFillBackground(True)
-        self.setAlignment(Qt.AlignCenter)
-
-    def focusInEvent(self, e):
-        self.focused.emit(self.objectName())
-        super().focusInEvent(e)
-
-    def on_text_changed(self, s):
-        pattern = re.compile('[^a-zA-Z\.]')  # remove anything except letters and periods
-        s = pattern.sub('', s)
-        if len(s) > 1:
-            s = s[-1]
-        self.edited.emit(self.objectName(), s.upper())
-
-    def update(self, square):
-        self.setText(square.text)
-        if square.focused:
-            self.setFocus()
-        if square.background == Background.WHITE:
-            self.set_background_color(Qt.white)
-        if square.background == Background.BLACK:
-            self.set_background_color(Qt.black)
-        if square.background == Background.YELLOW:
-            self.set_background_color(Qt.yellow)
-
-    def set_background_color(self, color):
-        p = self.palette()
-        p.setColor(self.backgroundRole(), color)
-        self.setPalette(p)
