@@ -56,3 +56,4 @@ I included `example.txt` to show the formatting.
 ## Future Improvements
 * Save and load multiple files
 * Calculate puzzle stats
+* Prune search branches based on average word score
