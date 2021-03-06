@@ -25,8 +25,8 @@ class AdvancedGeneratorTests(unittest.TestCase):
             ['H', 'U', 'H', '.', '.']
         ]
         grid = Grid(squares)
-        result = self.generator.optimize(grid)
-        self.assertTrue(result)
+        result, score = self.generator.optimize(grid)
+        self.assertEqual(score, 475)
 
     def test_finish_two_step_puzzle(self):
         squares = [
@@ -37,5 +37,5 @@ class AdvancedGeneratorTests(unittest.TestCase):
             ['H', 'U', 'H', '.', '.']
         ]
         grid = Grid(squares)
-        result = self.generator.optimize(grid)
-        self.assertTrue(result)
+        result, score = self.generator.optimize(grid)
+        self.assertEqual(score, 475)
