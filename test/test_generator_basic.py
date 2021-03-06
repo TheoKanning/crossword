@@ -1,7 +1,7 @@
 import unittest
 
 from crossword.dictionary import Dictionary
-from crossword.generate import Generator
+from crossword.generate import Generator, SearchInfo
 from crossword.grid import Grid, Mode
 
 
@@ -24,14 +24,15 @@ class BasicGeneratorTests(unittest.TestCase):
             ['X', '', '']
         ]
         grid = Grid(squares)
-        self.generator.unfilled_words = [
+        info = SearchInfo(unfilled_words = [
             ((1, 0), Mode.ACROSS),
             ((2, 0), Mode.ACROSS),
             ((0, 0), Mode.DOWN),
             ((0, 1), Mode.DOWN),
             ((0, 2), Mode.DOWN)
-        ]
-        target, direction = self.generator.get_next_target(grid)
+        ],
+        used_words=[])
+        target, direction = self.generator.get_next_target(grid, info)
         self.assertEqual(target, (0, 0))
         self.assertEqual(direction, Mode.DOWN)
 

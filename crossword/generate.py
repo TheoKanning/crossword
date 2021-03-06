@@ -3,17 +3,47 @@ import time
 
 from crossword.grid import Grid
 
+class SearchInfo:
+
+    def __init__(self,
+            unfilled_words,
+            used_words,
+            end_time=0,
+            score=0,
+            target_score=None,
+            verbose=False):
+        self.end_time=end_time
+        self.nodes_searched = 0
+        self.unfilled_words = unfilled_words
+        self.used_words = used_words
+        self.score = score
+        self.target_score = target_score
+        self.verbose = verbose
 
 class Generator:
 
     def __init__(self, dictionary, verbose=False):
         self.dictionary = dictionary
-        self.nodes_searched = 0
-        self.used_words = []  # list of used words to prevent re-using words
-        self.unfilled_words = []  # list of ((row, col) mode)
-        self.score = 0
-        self.target_score = 0
-        self.verbose = verbose
+
+    def optimize(self, original_grid, target_score=None, search_time=100, verbose=False):
+        grid = Grid(deepcopy(original_grid.squares))
+        info = SearchInfo(
+                unfilled_words=[],
+                used_words=[],
+                end_time=100,
+                score=0,
+                target_score=target_score,
+                verbose=verbose)
+
+        for square, mode in grid.get_all_words():
+            word = grid.get_word(square, mode)
+            if ' ' in word:
+                info.unfilled_words.append((square, mode))
+            else:
+                info.used_words.append(word)
+                info.score += int(self.dictionary.search(word)[0][1])
+
+        return self.search(grid, info)
 
     def get_possible_words(self, grid, square, mode):
         """ Returns a list of all possible words for a given square and direction
@@ -36,7 +66,7 @@ class Generator:
 
         return [(w[0], int(w[1])) for w in words]
 
-    def get_next_target(self, grid):
+    def get_next_target(self, grid, info):
         """
         Determines where to search next. Sorts by length and letters filled in, then resorts
         top 10 and picks the word with the fewest remaining possibilities.
@@ -53,10 +83,10 @@ class Generator:
             return len(self.dictionary.search(word))
 
         # re-order top 10 based on how many possibilities they have remaining, fewer first
-        self.unfilled_words.sort(reverse=True, key=score)
-        self.unfilled_words[0:10] = sorted(self.unfilled_words[0:10], key=number_of_options)
+        info.unfilled_words.sort(reverse=True, key=score)
+        info.unfilled_words[0:10] = sorted(info.unfilled_words[0:10], key=number_of_options)
 
-        return self.unfilled_words[0]
+        return info.unfilled_words[0]
 
     def set_word(self, grid, square, mode, word):
         """Fills the given square with the given word
@@ -67,66 +97,48 @@ class Generator:
             if grid.get_square(square) != word[i]:
                 grid.set_square(square, word[i])
 
-    def optimize(self, original_grid, target_score=None):
-        grid = Grid(deepcopy(original_grid.squares))
-        self.nodes_searched = 0
-        self.used_words = []
-        self.unfilled_words = []
-        self.score = 0
-        self.target_score = target_score
-
-        for square, mode in grid.get_all_words():
-            word = grid.get_word(square, mode)
-            if ' ' in word:
-                self.unfilled_words.append((square, mode))
-            else:
-                self.used_words.append(word)
-                self.score += int(self.dictionary.search(word)[0][1])
-
-        return self.search(grid)
-
-    def search(self, grid):
+    def search(self, grid, info):
         """ Recursive function that picks a square then loops through all available words.
         Returns false if no words are valid, true if the puzzle is complete"
         """
-        self.nodes_searched += 1
-        if self.verbose and self.nodes_searched % 10 == 0:
-            print(f"{self.nodes_searched} nodes searched")
-            print(f"Score:{self.score}")
+        info.nodes_searched += 1
+        if info.verbose and info.nodes_searched % 10 == 0:
+            print(f"{info.nodes_searched} nodes searched")
+            print(f"Score:{info.score}")
             grid.print()
             print("")
 
-        if not self.unfilled_words:
-            if self.target_score is None:
-                self.target_score = self.score - 1
-            return grid, self.score  # no more words to search
+        if not info.unfilled_words:
+            if info.target_score is None:
+                info.target_score = info.score - 1
+            return grid, info.score  # no more words to search
 
         original_squares = deepcopy(grid.squares)
-        square, mode = self.get_next_target(grid)
+        square, mode = self.get_next_target(grid, info)
 
-        self.unfilled_words.remove((square, mode))
+        info.unfilled_words.remove((square, mode))
 
         for word, word_score in self.get_possible_words(grid, square, mode):
-            maximum_score = self.score + word_score + 55 * len(self.unfilled_words)
-            if self.target_score and maximum_score < self.target_score:
+            maximum_score = info.score + word_score + 55 * len(info.unfilled_words)
+            if info.target_score and maximum_score < info.target_score:
                 continue
 
-            if word in self.used_words:
+            if word in info.used_words:
                 continue
 
-            self.used_words.append(word)
-            self.score += word_score
+            info.used_words.append(word)
+            info.score += word_score
 
             grid.squares = deepcopy(original_squares)
             self.set_word(grid, square, mode, word)
-            grid, new_score = self.search(grid)
+            grid, new_score = self.search(grid, info)
 
-            if self.target_score and new_score >= self.target_score:
+            if info.target_score and new_score >= info.target_score:
                 return grid, new_score
 
-            self.used_words.pop()
-            self.score -= word_score
+            info.used_words.pop()
+            info.score -= word_score
 
-        self.unfilled_words.append((square, mode))
+        info.unfilled_words.append((square, mode))
 
-        return grid, self.score
+        return grid, info.score
