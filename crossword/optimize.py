@@ -3,6 +3,10 @@ from crossword.generate import Generator
 def optimize(grid, dictionary):
 
     generator = Generator(dictionary)
-    best, best_score = generator.optimize(grid, target_score=None, verbose=False)
+    best, best_score = generator.optimize(
+            grid,
+            target_score=3600,
+            search_time=3,
+            verbose=False)
 
     return best, best_score

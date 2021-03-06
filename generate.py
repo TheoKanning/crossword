@@ -12,7 +12,7 @@ grid = grid.Grid(storage.load(filename))
 start = time.time()
 generator = generate.Generator(dictionary)
 
-target_score = None
+target_score = 3600
 #grid, score = generator.optimize(grid, target_score)
 grid, total_score = optimize.optimize(grid, dictionary)
 

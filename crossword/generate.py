@@ -25,12 +25,13 @@ class Generator:
     def __init__(self, dictionary, verbose=False):
         self.dictionary = dictionary
 
-    def optimize(self, original_grid, target_score=None, search_time=100, verbose=False):
+    def optimize(self, original_grid, target_score=None, search_time=None, verbose=False):
         grid = Grid(deepcopy(original_grid.squares))
+        end_time = time.time() + search_time if search_time else None
         info = SearchInfo(
                 unfilled_words=[],
                 used_words=[],
-                end_time=100,
+                end_time=end_time,
                 score=0,
                 target_score=target_score,
                 verbose=verbose)
@@ -112,6 +113,9 @@ class Generator:
             if info.target_score is None:
                 info.target_score = info.score - 1
             return grid, info.score  # no more words to search
+
+        if info.end_time and time.time() > info.end_time:
+            return grid, info.score
 
         original_squares = deepcopy(grid.squares)
         square, mode = self.get_next_target(grid, info)
