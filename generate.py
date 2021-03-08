@@ -17,10 +17,10 @@ target_score = 3600
 grid, total_score = optimize.optimize(grid, dictionary)
 
 grid.print()
-for s, m in grid.get_all_words():
-    word = grid.get_word(s, m)
-    score = int(dictionary.search(word)[0][1])
-    print(f"{s} {m} {word}: {score}")
+# for s, m in grid.get_all_words():
+#     word = grid.get_word(s, m)
+#     score = int(dictionary.search(word)[0][1])
+#     print(f"{s} {m} {word}: {score}")
 seconds = time.time() - start
 nodes = 0 #generator.nodes_searched
 

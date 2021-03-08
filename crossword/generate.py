@@ -1,4 +1,3 @@
-from copy import deepcopy
 import time
 
 from crossword.grid import Grid
@@ -26,7 +25,7 @@ class Generator:
         self.dictionary = dictionary
 
     def optimize(self, original_grid, target_score=None, search_time=None, verbose=False):
-        grid = Grid(deepcopy(original_grid.squares))
+        grid = original_grid.copy()
         end_time = time.time() + search_time if search_time else None
         info = SearchInfo(
                 unfilled_words=[],
@@ -117,7 +116,7 @@ class Generator:
         if info.end_time and time.time() > info.end_time:
             return grid, info.score
 
-        original_squares = deepcopy(grid.squares)
+        original_grid = grid.copy()
         square, mode = self.get_next_target(grid, info)
 
         info.unfilled_words.remove((square, mode))
@@ -133,7 +132,7 @@ class Generator:
             info.used_words.append(word)
             info.score += word_score
 
-            grid.squares = deepcopy(original_squares)
+            grid = original_grid.copy()
             self.set_word(grid, square, mode, word)
             grid, new_score = self.search(grid, info)
 

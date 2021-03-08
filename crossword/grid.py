@@ -28,6 +28,9 @@ class Grid:
         self.squares = deepcopy(squares)
         self.size = size
 
+    def copy(self):
+        return Grid(self.squares)
+
     def get_square(self, square):
         return self.squares[square[0]][square[1]]
 
@@ -36,6 +39,13 @@ class Grid:
 
     def is_block(self, square):
         return self.get_square(square) == BLOCK
+
+    def is_complete(self):
+        for row in self.squares:
+            for letter in row:
+                if letter == '':
+                    return False
+        return True
 
     def set_square(self, square, text):
         assert len(text) <= 1

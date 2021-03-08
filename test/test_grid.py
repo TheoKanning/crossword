@@ -31,6 +31,14 @@ class GridTests(unittest.TestCase):
         self.assertEqual(grid.squares, [['', ''], ['', '']])
         self.assertEqual(grid.size, 2)
 
+    def test_copy(self):
+        grid = Grid(squares)
+        copy = grid.copy()
+
+        grid.set_square((2, 2), 'X')
+        self.assertEqual(grid.get_square((2, 2)), 'X')
+        self.assertEqual(copy.get_square((2, 2)), '')
+
     @parameterized.expand([
         [(0, 0), '.'],
         [(1, 2), 'F'],
@@ -60,6 +68,13 @@ class GridTests(unittest.TestCase):
         grid = Grid(squares, 5)
         self.assertTrue(grid.is_block((2, 1)))
         self.assertFalse(grid.is_block((3, 3)))
+
+    def test_is_complete(self):
+        grid = Grid(squares)
+        self.assertFalse(grid.is_complete())
+
+        grid.set_square((2, 2), 'A')
+        self.assertTrue(grid.is_complete())
 
     @parameterized.expand([
         [(0, 0), Mode.ACROSS, []],
