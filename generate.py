@@ -25,5 +25,6 @@ seconds = time.time() - start
 nodes = 0 #generator.nodes_searched
 
 print(f"Total score: {total_score}")
+print(f"Average word score: {total_score/len(grid.get_all_words()):.2f}")
 print(f"Generation took {seconds:.2f} seconds")
 print(f"Searched {nodes} nodes, {nodes / seconds:.2f} nodes/sec")
