@@ -12,6 +12,7 @@ def optimize(grid, dictionary):
     print("Solution found, score:", best_score)
     print("\nOptimizing quarter sections...")
     best, best_score = _iterate_sections(2, best, dictionary)
+    best, best_score = _iterate_sections(2, best, dictionary)
 
     print("\nOptimizing ninth sections...")
     best, best_score = _iterate_sections(3, best, dictionary)
@@ -26,7 +27,7 @@ def _iterate_sections(sections, grid, dictionary):
     """
 
     best = grid.copy()
-    best_score = 0
+    best_score = _grid_score(grid, dictionary)
     num_chunks = sections**2
     chunk = 1
     size = grid.size
@@ -38,7 +39,7 @@ def _iterate_sections(sections, grid, dictionary):
             col_range = ((j*size)//sections, ((j+1)*size)//sections)
             grid = _clear_letters(row_range, col_range, best)
 
-            grid, score = _iterate(grid, dictionary)
+            grid, score = _iterate(grid, dictionary, best_score)
 
             if score > best_score:
                 best = grid
@@ -48,25 +49,24 @@ def _iterate_sections(sections, grid, dictionary):
             chunk += 1
     return best, best_score
 
-def _iterate(grid, dictionary):
+def _iterate(grid, dictionary, target_score=0):
     """
     Repeatedly fills the given grid with a higher target each time
+    Can take a known target score to speed up initial searches
     """
     generator = Generator(dictionary)
 
-    best, best_score = generator.optimize(
-        grid,
-        target_score=None,
-        search_time=3,
-        verbose=False)
+    best = grid.copy()
+    best_score = target_score
 
     while True:
         result, score = generator.optimize(
               grid,
               target_score=best_score + 1,
-              search_time=3,
+              search_time=10,
               verbose=False)
 
+        print(score)
         if score > best_score:
             best_score = score
             best = result
@@ -89,3 +89,14 @@ def _clear_letters(row_range, col_range, grid):
                 output.set_square((row, col), '')
 
     return output
+
+def _grid_score(grid, dictionary):
+    if not grid.is_complete():
+        return None
+
+    score = 0
+    for s, m in grid.get_all_words():
+        word = grid.get_word(s, m)
+        score += int(dictionary.search(word)[0][1])
+
+    return score
