@@ -9,9 +9,9 @@ def optimize(grid, dictionary):
         print("Could not generate solution!")
         return best, best_score
 
+    best.print()
     print("Solution found, score:", best_score)
     print("\nOptimizing quarter sections...")
-    best, best_score = _iterate_sections(2, best, dictionary)
     best, best_score = _iterate_sections(2, best, dictionary)
 
     print("\nOptimizing ninth sections...")
@@ -49,7 +49,7 @@ def _iterate_sections(sections, grid, dictionary):
             chunk += 1
     return best, best_score
 
-def _iterate(grid, dictionary, target_score=0):
+def _iterate(grid, dictionary, target_score=None):
     """
     Repeatedly fills the given grid with a higher target each time
     Can take a known target score to speed up initial searches
@@ -62,12 +62,12 @@ def _iterate(grid, dictionary, target_score=0):
     while True:
         result, score = generator.optimize(
               grid,
-              target_score=best_score + 1,
+              target_score=best_score + 1 if best_score else None,
               search_time=10,
               verbose=False)
 
         print(score)
-        if score > best_score:
+        if not best_score or score > best_score:
             best_score = score
             best = result
         else:

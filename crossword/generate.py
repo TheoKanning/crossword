@@ -122,11 +122,11 @@ class Generator:
         info.unfilled_words.remove((square, mode))
 
         for word, word_score in self.get_possible_words(grid, square, mode):
-            maximum_score = info.score + word_score + 55 * len(info.unfilled_words)
+            maximum_score = info.score + word_score + 60 * len(info.unfilled_words)
             if info.target_score and maximum_score < info.target_score:
                 continue
 
-            if word in info.used_words:
+            if word.upper() in info.used_words:
                 continue
 
             info.used_words.append(word)
