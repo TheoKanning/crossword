@@ -41,6 +41,15 @@ class DictionaryTests(unittest.TestCase):
         self.assertEqual(letters, expected)
 
     @parameterized.expand([
+        ["bird", 50],
+        ["id a", 0],
+        ["fioakld", 0]
+        ])
+    def test_word_score(self, word, expected):
+        score = self.dictionary.word_score(word)
+        self.assertEqual(score, expected)
+
+    @parameterized.expand([
         [None, ["bind", "bird", "date", "idea", "note", "word"]],
         [1, ["date", "idea", "word", "bind", "note", "bird"]],
         [2, ["date", "idea", "bird", "note", "word", "bind"]],

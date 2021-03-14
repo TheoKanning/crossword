@@ -108,32 +108,37 @@ class Model:
         if self.grid.get_square(self.focus) == BLOCK:
             return [], []
 
-        across_squares = self.grid.get_word_squares(self.focus, Mode.ACROSS)
-        across_index = across_squares.index(self.focus)
-        across_word = self.grid.get_word(self.focus, Mode.ACROSS)
-        down_squares = self.grid.get_word_squares(self.focus, Mode.DOWN)
-        down_index = down_squares.index(self.focus)
-        down_word = self.grid.get_word(self.focus, Mode.DOWN)
+        across = self._get_suggestions(self.focus, Mode.ACROSS)
+        down = self._get_suggestions(self.focus, Mode.DOWN)
+
+        return across, down
+
+    def _get_suggestions(self, square, mode):
+        word = self.grid.get_word(square, mode)
+        squares = self.grid.get_word_squares(square, mode)
 
         # copy to avoid modifying cached lists
-        across_suggestions = self.dictionary.search(across_word).copy()
-        down_suggestions = self.dictionary.search(down_word).copy()
+        words = self.dictionary.search(word).copy()
+        compatible_words = words.copy()
 
-        across_letters = set([word[0][across_index] for word in across_suggestions])
-        down_letters = set([word[0][down_index] for word in down_suggestions])
+        # loop through empty letter index and remove words that don't fit crossing words
+        for i, s in enumerate(squares):
+            if not self.grid.is_empty(s):
+                # skip squares that are already filled in
+                continue
 
-        for i, word in enumerate(across_suggestions):
-            if word[0][across_index] in down_letters:
-                across_suggestions[i] = word[0], str(int(word[1]) + 22)
+            cross_index = self.grid.get_word_squares(s, mode.opposite()).index(s)
+            cross_word = self.grid.get_word(s, mode.opposite())
+            available_letters = self.dictionary.get_allowed_letters(cross_word, cross_index)
+            compatible_words = [w for w in compatible_words if w[0][i] in available_letters]
 
-        for i, word in enumerate(down_suggestions):
-            if word[0][down_index] in across_letters:
-                down_suggestions[i] = word[0], str(int(word[1]) + 22)
+        # add bonus to compatible words
+        for i, w in enumerate(words):
+            if w in compatible_words:
+                words[i] = w[0], str(int(w[1]) + 100)
 
-        across_suggestions.sort(key=lambda x: x[1], reverse=True)
-        down_suggestions.sort(key=lambda x: x[1], reverse=True)
-
-        return across_suggestions, down_suggestions
+        words.sort(key=lambda w: int(w[1]), reverse=True)
+        return words
 
     def print(self):
         self.grid.print()

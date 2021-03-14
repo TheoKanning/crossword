@@ -41,7 +41,7 @@ class Generator:
                 info.unfilled_words.append((square, mode))
             else:
                 info.used_words.append(word)
-                info.score += int(self.dictionary.search(word)[0][1])
+                info.score += self.dictionary.word_score(word)
 
         return self.search(grid, info)
 

@@ -56,6 +56,17 @@ class Dictionary:
         words = self.search(word)
         return set([w[0][index] for w in words])
 
+    def word_score(self, word):
+        if ' ' in word:
+            return 0
+
+        results = self.search(word)
+
+        if len(results) != 1:
+            return 0
+
+        return int(results[0][1])
+
     def _search_text(self, word, text):
         """
         Finds rows matching the given word. text is a list of dictionary strings
