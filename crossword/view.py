@@ -66,12 +66,18 @@ class CrosswordLineEdit(QLineEdit):
         self.setText(square.text)
         if square.focused:
             self.setFocus()
+
         if square.background == Background.WHITE:
             self.set_background_color(Qt.white)
-        if square.background == Background.BLACK:
+        elif square.background == Background.BLACK:
             self.set_background_color(Qt.black)
-        if square.background == Background.YELLOW:
+        elif square.background == Background.YELLOW:
             self.set_background_color(Qt.yellow)
+
+        if square.bold:
+            self.setStyleSheet("color: black")
+        else:
+            self.setStyleSheet("color: gray")
 
     def set_background_color(self, color):
         p = self.palette()

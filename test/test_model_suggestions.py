@@ -57,6 +57,7 @@ class ModelTests(unittest.TestCase):
         model.fill()
 
         self.assertEqual(['.', '.', 'P', 'E', 'C'], model.grid.squares[0])
+        self.assertFalse(model.get_square(0, 2).bold)
 
 
 if __name__ == "__main__":

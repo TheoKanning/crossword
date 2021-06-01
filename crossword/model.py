@@ -14,7 +14,7 @@ class Background(Enum):
     YELLOW = 2
 
 
-Square = namedtuple('Square', ['text', 'background', 'focused'])
+Square = namedtuple('Square', ['text', 'background', 'focused', 'bold'])
 
 
 class Model:
@@ -34,6 +34,7 @@ class Model:
         self.focus = (0, 0)
         self.highlight = []
         self.mode = Mode.ACROSS
+        self.set_manually = [[not self.grid.is_empty((r, c)) for c in range(self.size)] for r in range(self.size)]
         self.dictionary = Dictionary(dictionary_path)
 
     def toggle_orientation(self):
@@ -56,6 +57,7 @@ class Model:
             # remove corresponding block if this square used to be a block
             self.grid.set_square((self.size - 1 - row, self.size - 1 - col), '')
         self.grid.set_square((row, col), text)
+        self.set_manually[row][col] = text != ''
         self.get_next_focus(text)
         self.update_highlighted_squares()
 
@@ -67,7 +69,8 @@ class Model:
         elif (row, col) in self.highlight:
             background = Background.YELLOW
         focused = (row, col) == self.focus
-        return Square(text, background, focused)
+        bold = self.set_manually[row][col]
+        return Square(text, background, focused, bold)
 
     def update_highlighted_squares(self):
         self.highlight = self.grid.get_word_squares(self.focus, self.mode)
@@ -142,8 +145,15 @@ class Model:
         return words
 
     def fill(self):
-        """ Fill the blank squares using a Generator """
-        filled_grid, _ = optimize(self.grid, self.dictionary)
+        """ Fill in any blank squares. Letters not set manually will appear gray """
+        grid = self.grid.copy()
+
+        # clear any squares set by previous fills
+        for r in range(self.size):
+            for c in range(self.size):
+                if not self.set_manually[r][c]:
+                    grid.set_square((r, c), '')
+        filled_grid, _ = optimize(grid, self.dictionary)
         self.grid = filled_grid
 
     def print(self):
