@@ -13,7 +13,7 @@ FILENAME = 'saved/crossword.txt'
 
 def start_app():
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon('icon.png'))
+    app.setWindowIcon(QIcon('assets/icon.png'))
     ex = App()
     sys.exit(app.exec_())
 
