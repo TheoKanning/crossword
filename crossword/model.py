@@ -5,6 +5,7 @@ from os import path
 from crossword import storage
 from crossword.dictionary import Dictionary
 from crossword.grid import BLOCK, Grid, Mode
+from crossword.optimize import optimize
 
 
 class Background(Enum):
@@ -139,6 +140,11 @@ class Model:
 
         words.sort(key=lambda w: int(w[1]), reverse=True)
         return words
+
+    def fill(self):
+        """ Fill the blank squares using a Generator """
+        filled_grid, _ = optimize(self.grid, self.dictionary)
+        self.grid = filled_grid
 
     def print(self):
         self.grid.print()

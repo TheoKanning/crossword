@@ -11,7 +11,7 @@ dictionary = dictionary.Dictionary(seed=0)
 grid = grid.Grid(storage.load(filename))
 start = time.time()
 
-grid, total_score = optimize.optimize(grid, dictionary)
+grid, total_score = optimize.optimize(grid, dictionary, optimize_sections=True)
 
 print("")
 grid.print()

@@ -1,6 +1,6 @@
 from crossword.generate import Generator
 
-def optimize(grid, dictionary):
+def optimize(grid, dictionary, optimize_sections=False):
     print("Starting optimization...")
     print("Finding initial solution...")
     best, best_score = _iterate(grid, dictionary)
@@ -11,11 +11,13 @@ def optimize(grid, dictionary):
 
     best.print()
     print("Solution found, score:", best_score)
-    print("\nOptimizing quarter sections...")
-    best, best_score = _iterate_sections(2, best, dictionary)
 
-    print("\nOptimizing ninth sections...")
-    best, best_score = _iterate_sections(3, best, dictionary)
+    if optimize_sections:
+        print("\nOptimizing quarter sections...")
+        best, best_score = _iterate_sections(2, best, dictionary)
+
+        print("\nOptimizing ninth sections...")
+        best, best_score = _iterate_sections(3, best, dictionary)
 
     print("\nDone optimizing, final score:", best_score)
 
@@ -34,7 +36,7 @@ def _iterate_sections(sections, grid, dictionary):
 
     for i in range(sections):
         for j in range(sections):
-            print(f"Optimizing chuck {chunk} of {num_chunks}")
+            print(f"Optimizing chunk {chunk} of {num_chunks}")
             row_range = ((i*size)//sections, ((i+1)*size)//sections)
             col_range = ((j*size)//sections, ((j+1)*size)//sections)
             grid = _clear_letters(row_range, col_range, best)

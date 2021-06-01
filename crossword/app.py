@@ -86,6 +86,10 @@ class App(QWidget):
         save.clicked.connect(self.save_crossword)
         layout.addWidget(save)
 
+        fill = QPushButton("Fill")
+        fill.clicked.connect(self.fill)
+        layout.addWidget(fill)
+
         self.options_group_box.setLayout(layout)
 
     def keyPressEvent(self, event):
@@ -111,6 +115,10 @@ class App(QWidget):
 
     def save_crossword(self):
         self.model.save(FILENAME)
+
+    def fill(self):
+        self.model.fill()
+        self.update_views()
 
     def on_box_edited(self, name, text):
         coords = get_coords_from_name(name)

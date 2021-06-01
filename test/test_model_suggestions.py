@@ -44,5 +44,20 @@ class ModelTests(unittest.TestCase):
         suggestions = model._get_suggestions((0,2), grid.Mode.ACROSS)
         print(suggestions[:10])
 
+    def test_fill(self):
+        squares = [
+            ['.', '.', '', '', ''],
+            ['B', 'E', 'E', 'C', 'H'],
+            ['A', 'S', 'A', 'H', 'I'],
+            ['T', 'A', 'C', 'O', 'S'],
+            ['H', 'U', 'H', '.', '.']
+        ]
+
+        model = Model(squares)
+        model.fill()
+
+        self.assertEqual(['.', '.', 'P', 'E', 'C'], model.grid.squares[0])
+
+
 if __name__ == "__main__":
     unittest.main()
