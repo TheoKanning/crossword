@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 pyqt5 = "==5.14.1"
 parameterized = "~=0.7.1"
+openai = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.10"
