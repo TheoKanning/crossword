@@ -61,7 +61,7 @@ class Grid:
 
     def get_word_squares(self, square, mode):
         """
-        Return the coordinates of all of the squares that form a continuous word
+        Return the coordinates of all the squares that form a continuous word
         with the given square.
         """
         row, col = square

@@ -1,11 +1,16 @@
 import re
 
-from PyQt5.QtGui import QPalette
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QGroupBox, QSizePolicy
 from PyQt5.QtWidgets import QLineEdit, QVBoxLayout, QLabel, QScrollArea
 
 from crossword.model import Background
+
+BACKGROUND_COLORS = {
+    Background.WHITE: "white",
+    Background.BLACK: "black",
+    Background.HIGHLIGHT: "#a7faf2"
+}
 
 
 class SuggestionBox(QGroupBox):
@@ -18,7 +23,8 @@ class SuggestionBox(QGroupBox):
         layout = QVBoxLayout()
 
         label = QLabel(title)
-        layout.addWidget(label)
+        label.setObjectName("suggestion_box_label")
+        layout.addWidget(label, alignment=Qt.AlignHCenter)
 
         scroll = QScrollArea()
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
@@ -27,7 +33,7 @@ class SuggestionBox(QGroupBox):
 
         self.suggestions = QLabel()
         scroll.setWidget(self.suggestions)
-        layout.addWidget(scroll)
+        layout.addWidget(scroll, )
 
         self.setLayout(layout)
 
@@ -51,6 +57,10 @@ class CrosswordLineEdit(QLineEdit):
         self.textEdited.connect(self.on_text_changed)
         self.setAutoFillBackground(True)
         self.setAlignment(Qt.AlignCenter)
+        policy = QSizePolicy(
+            QSizePolicy.Expanding,
+            QSizePolicy.Expanding)
+        self.setSizePolicy(policy)
 
     def focusInEvent(self, e):
         self.focused.emit(self.objectName())
@@ -68,22 +78,13 @@ class CrosswordLineEdit(QLineEdit):
         if square.focused:
             self.setFocus()
 
-        if square.background == Background.WHITE:
-            self.set_background_color(Qt.white)
-        elif square.background == Background.BLACK:
-            self.set_background_color(Qt.black)
-        elif square.background == Background.HIGHLIGHT:
-            self.set_background_color(Qt.cyan)
+        background = BACKGROUND_COLORS[square.background]
+        text_color = "black" if square.bold else "gray"
 
-        color = Qt.black if square.bold else Qt.gray
-        self.set_text_color(color)
-
-    def set_background_color(self, color):
-        p = self.palette()
-        p.setColor(self.backgroundRole(), color)
-        self.setPalette(p)
-
-    def set_text_color(self, color):
-        p = self.palette()
-        p.setColor(QPalette.Text, color)
-        self.setPalette(p)
+        # not sure why setting a style in crossword.qss prevents changing background color later
+        self.setStyleSheet(f"""
+        background-color: {background};
+        color: {text_color};
+        border: 1px solid #000;
+        font-size: 16px;
+        """)

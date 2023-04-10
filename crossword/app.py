@@ -45,6 +45,7 @@ class App(QWidget):
     def init_ui(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setObjectName("app")
 
         self.create_grid_layout()
         self.create_options_layout()
@@ -68,6 +69,7 @@ class App(QWidget):
         layout = QGridLayout()
         layout.setSpacing(0)
         layout.setRowStretch(0, 0)
+
 
         for row in range(0, 15):
             for col in range(0, 15):

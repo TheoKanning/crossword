@@ -1,3 +1,19 @@
+QGroupBox,
+QScrollArea {
+  background-color: #fff;
+  border: 0px;
+}
+
+QWidget#app {
+  background-color: #fff;
+}
+
+QLabel#suggestion_box_label {
+  color: #464d55;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 QPushButton {
   background-color: #0d6efd;
   color: #fff;
@@ -8,6 +24,7 @@ QPushButton {
   margin-top: 10px;
   outline: 0px;
 }
+
 QPushButton:hover,
 QPushButton:focus {
   background-color: #0b5ed7;
