@@ -59,8 +59,8 @@ class ModelTests(unittest.TestCase):
     @parameterized.expand([
         [(0, 0), '.', Background.BLACK, False],
         [(1, 1), 'W', Background.WHITE, False],
-        [(2, 2), '', Background.YELLOW, False],
-        [(2, 3), 'C', Background.YELLOW, True]
+        [(2, 2), '', Background.HIGHLIGHT, False],
+        [(2, 3), 'C', Background.HIGHLIGHT, True]
     ])
     def test_get_square_info(self, square, text, background, focused):
         model = Model(squares, dictionary_path=dictionary_path)

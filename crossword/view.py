@@ -1,5 +1,6 @@
 import re
 
+from PyQt5.QtGui import QPalette
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QGroupBox
 from PyQt5.QtWidgets import QLineEdit, QVBoxLayout, QLabel, QScrollArea
@@ -71,15 +72,18 @@ class CrosswordLineEdit(QLineEdit):
             self.set_background_color(Qt.white)
         elif square.background == Background.BLACK:
             self.set_background_color(Qt.black)
-        elif square.background == Background.YELLOW:
-            self.set_background_color(Qt.yellow)
+        elif square.background == Background.HIGHLIGHT:
+            self.set_background_color(Qt.cyan)
 
-        if square.bold:
-            self.setStyleSheet("color: black")
-        else:
-            self.setStyleSheet("color: gray")
+        color = Qt.black if square.bold else Qt.gray
+        self.set_text_color(color)
 
     def set_background_color(self, color):
         p = self.palette()
         p.setColor(self.backgroundRole(), color)
+        self.setPalette(p)
+
+    def set_text_color(self, color):
+        p = self.palette()
+        p.setColor(QPalette.Text, color)
         self.setPalette(p)

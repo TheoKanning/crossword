@@ -45,6 +45,7 @@ class Generator:
 
         return self.search(grid, info)
 
+
     def get_possible_words(self, grid, square, mode):
         """ Returns a list of all possible words for a given square and direction
             sorted from best to worst

@@ -11,7 +11,7 @@ from crossword.optimize import optimize
 class Background(Enum):
     WHITE = 0
     BLACK = 1
-    YELLOW = 2
+    HIGHLIGHT = 2
 
 
 Square = namedtuple('Square', ['text', 'background', 'focused', 'bold'])
@@ -19,7 +19,7 @@ Square = namedtuple('Square', ['text', 'background', 'focused', 'bold'])
 
 class Model:
     """
-    A class that holds all of the UI state for a crossword puzzle.
+    A class that holds the UI state for a crossword puzzle.
     """
 
     def __init__(self, squares=None, filename=None, size=15, dictionary_path="dictionaries/"):
@@ -67,7 +67,7 @@ class Model:
         if text == BLOCK:
             background = Background.BLACK
         elif (row, col) in self.highlight:
-            background = Background.YELLOW
+            background = Background.HIGHLIGHT
         focused = (row, col) == self.focus
         bold = self.set_manually[row][col]
         return Square(text, background, focused, bold)

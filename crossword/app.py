@@ -1,5 +1,6 @@
 import sys
 
+from pathlib import Path
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
@@ -13,7 +14,6 @@ FILENAME = 'saved/crossword.txt'
 
 def start_app():
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon('assets/icon.png'))
     ex = App()
     sys.exit(app.exec_())
 
@@ -39,6 +39,8 @@ class App(QWidget):
         self.model = Model(filename=FILENAME, size=15)
         self.init_ui()
         self.update_views()
+        self.setWindowIcon(QIcon('assets/icon.png'))
+        self.setStyleSheet(Path('crossword/crossword.qss').read_text())
 
     def init_ui(self):
         self.setWindowTitle(self.title)
