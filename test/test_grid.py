@@ -106,6 +106,36 @@ class GridTests(unittest.TestCase):
         actual = grid.get_word(square, mode)
         self.assertEqual(actual, expected)
 
+    @parameterized.expand([
+        [(0, 2), Mode.ACROSS, (0, 2)],
+        [(0, 4), Mode.ACROSS, (0, 2)],
+        [(1, 2), Mode.ACROSS, (1, 0)],
+        [(2, 2), Mode.ACROSS, (2, 2)],
+        [(0, 4), Mode.DOWN, (0, 4)],
+        [(1, 0), Mode.DOWN, (1, 0)],
+        [(3, 0), Mode.DOWN, (1, 0)],
+        [(4, 1), Mode.DOWN, (3, 1)],
+    ])
+    def test_get_word_start_square(self, square, mode, expected):
+        grid = Grid(squares, 5)
+        actual = grid.get_word_start_square(square, mode)
+        self.assertEqual(expected, actual)
+
+    def test_set_and_get_clue(self):
+        grid = Grid(squares, 5)
+        grid.set_clue((0, 2), Mode.ACROSS, "Clue 1")
+
+        self.assertEqual("Clue 1", grid.get_clue((0, 2), Mode.ACROSS))
+        self.assertEqual("Clue 1", grid.get_clue((0, 4), Mode.ACROSS))
+        self.assertEqual("", grid.get_clue((0, 2), Mode.DOWN))
+
+        grid.set_clue((2, 2), Mode.DOWN, "Clue 2")
+
+        self.assertEqual("Clue 2", grid.get_clue((2, 2), Mode.DOWN))
+        self.assertEqual("Clue 2", grid.get_clue((0, 2), Mode.DOWN))
+        self.assertEqual("Clue 2", grid.get_clue((4, 2), Mode.DOWN))
+        self.assertEqual("", grid.get_clue((2, 2), Mode.ACROSS))
+
     def test_get_all_words(self):
         squares = [
             ['.', '', '', '', ''],
