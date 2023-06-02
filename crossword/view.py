@@ -1,8 +1,9 @@
 import re
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QGroupBox, QSizePolicy
-from PyQt5.QtWidgets import QLineEdit, QVBoxLayout, QLabel, QScrollArea
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QGroupBox, QSizePolicy
+from PyQt6.QtWidgets import QLineEdit, QVBoxLayout, QLabel, QScrollArea
+
 
 from crossword.model import Background
 
@@ -24,11 +25,11 @@ class SuggestionBox(QGroupBox):
 
         label = QLabel(title)
         label.setObjectName("suggestion_box_label")
-        layout.addWidget(label, alignment=Qt.AlignHCenter)
+        layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         scroll = QScrollArea()
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         scroll.setWidgetResizable(True)
 
         self.suggestions = QLabel()
@@ -56,10 +57,10 @@ class CrosswordLineEdit(QLineEdit):
         QLineEdit.__init__(self, *args)
         self.textEdited.connect(self.on_text_changed)
         self.setAutoFillBackground(True)
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         policy = QSizePolicy(
-            QSizePolicy.Expanding,
-            QSizePolicy.Expanding)
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Expanding)
         self.setSizePolicy(policy)
 
     def focusInEvent(self, e):

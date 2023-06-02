@@ -1,10 +1,10 @@
 import sys
 
 from pathlib import Path
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout
+from PyQt6.QtCore import Qt, QEvent
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
+from PyQt6.QtWidgets import QGridLayout, QVBoxLayout
 
 from crossword.model import Model
 from crossword.view import CrosswordLineEdit, SuggestionBox
@@ -15,7 +15,7 @@ FILENAME = 'saved/crossword.txt'
 def start_app():
     app = QApplication(sys.argv)
     ex = App()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 def get_box_name(row, col):
@@ -47,8 +47,8 @@ class App(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setObjectName("app")
 
-        self.create_grid_layout()
-        self.create_options_layout()
+        self.grid_group_box = self.create_grid_layout()
+        self.options_group_box = self.create_options_layout()
 
         self.across_suggestions = SuggestionBox("Across")
         self.down_suggestions = SuggestionBox("Down")
@@ -64,8 +64,8 @@ class App(QWidget):
         self.show()
 
     def create_grid_layout(self):
-        self.grid_group_box = QGroupBox()
-        self.grid_group_box.setMaximumSize(450, 450)
+        grid_group_box = QGroupBox()
+        grid_group_box.setMaximumSize(450, 450)
         layout = QGridLayout()
         layout.setSpacing(0)
         layout.setRowStretch(0, 0)
@@ -80,10 +80,11 @@ class App(QWidget):
                 text_box.installEventFilter(self)
                 layout.addWidget(text_box, row, col)
 
-        self.grid_group_box.setLayout(layout)
+        grid_group_box.setLayout(layout)
+        return grid_group_box
 
     def create_options_layout(self):
-        self.options_group_box = QGroupBox()
+        options_group_box = QGroupBox()
         layout = QVBoxLayout()
 
         save = QPushButton("Save")
@@ -94,24 +95,25 @@ class App(QWidget):
         fill.clicked.connect(self.fill)
         layout.addWidget(fill)
 
-        self.options_group_box.setLayout(layout)
+        options_group_box.setLayout(layout)
+        return options_group_box
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Shift:
+        if event.key() == Qt.Key.Key_Shift:
             self.model.toggle_orientation()
             self.update_views()
 
     def eventFilter(self, obj, event):
         # filter to keep LineEdits from consuming arrow keys
-        if event.type() == QEvent.KeyPress:
-            if event.key() in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Right, Qt.Key_Left]:
-                if event.key() == Qt.Key_Up:
+        if event.type() == QEvent.Type.KeyPress:
+            if event.key() in [Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Right, Qt.Key.Key_Left]:
+                if event.key() == Qt.Key.Key_Up:
                     self.model.move_up()
-                elif event.key() == Qt.Key_Down:
+                elif event.key() == Qt.Key.Key_Down:
                     self.model.move_down()
-                elif event.key() == Qt.Key_Left:
+                elif event.key() == Qt.Key.Key_Left:
                     self.model.move_left()
-                elif event.key() == Qt.Key_Right:
+                elif event.key() == Qt.Key.Key_Right:
                     self.model.move_right()
                 self.update_views()
                 return True
@@ -147,4 +149,3 @@ class App(QWidget):
         across, down = self.model.get_suggestions()
         self.across_suggestions.update_suggestions(across)
         self.down_suggestions.update_suggestions(down)
-
