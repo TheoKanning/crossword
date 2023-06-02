@@ -27,6 +27,7 @@ class Grid:
 
         self.squares = deepcopy(squares)
         self.size = size
+        self.clues = {Mode.ACROSS: {}, Mode.DOWN: {}} # {mode: {square: clue}}
 
     def copy(self):
         return Grid(self.squares)
@@ -87,6 +88,26 @@ class Grid:
         word_squares = list(set(word_squares))
         word_squares.sort()
         return word_squares
+
+    def get_word_start_square(self, square, mode):
+        """
+        Returns the first square in the word containing the given square.
+        """
+        return self.get_word_squares(square, mode)[0]
+
+    def get_clue(self, square, mode):
+        """
+        Returns the clue for the word containing the given square.
+        """
+        start = self.get_word_start_square(square, mode)
+        return self.clues[mode].get(start, "")
+
+    def set_clue(self, square, mode, clue):
+        """
+        Sets the clue for the word containing the given square.
+        """
+        start = self.get_word_start_square(square, mode)
+        self.clues[mode][start] = clue
 
     def get_all_words(self):
         """
