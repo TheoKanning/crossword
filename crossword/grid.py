@@ -1,3 +1,4 @@
+import json
 from copy import deepcopy
 from enum import Enum
 
@@ -13,12 +14,18 @@ class Mode(Enum):
 BLOCK = "."
 
 
+def load_grid(filename):
+    with open(filename, "r") as f:
+        data = json.load(f)
+        return Grid(data["squares"], data["size"], data["clues"])
+
+
 class Grid:
     """
     A class that holds the letters and blocks of a crossword grid.
     """
 
-    def __init__(self, squares=None, size=15):
+    def __init__(self, squares=None, size=15, clues=None):
         if squares:
             assert len(squares) == len(squares[0])
             size = len(squares)
@@ -27,7 +34,9 @@ class Grid:
 
         self.squares = deepcopy(squares)
         self.size = size
-        self.clues = {Mode.ACROSS: {}, Mode.DOWN: {}}  # {mode: {square: clue}}
+        self.clues = (
+            deepcopy(clues) if clues else {str(Mode.ACROSS): {}, str(Mode.DOWN): {}}
+        )  # {mode: {square: clue}}
 
     def copy(self):
         return Grid(self.squares)
@@ -100,14 +109,14 @@ class Grid:
         Returns the clue for the word containing the given square.
         """
         start = self.get_word_start_square(square, mode)
-        return self.clues[mode].get(start, "")
+        return self.clues[str(mode)].get(str(start), "")
 
     def set_clue(self, square, mode, clue):
         """
         Sets the clue for the word containing the given square.
         """
         start = self.get_word_start_square(square, mode)
-        self.clues[mode][start] = clue
+        self.clues[str(mode)][str(start)] = clue
 
     def get_all_words(self):
         """
@@ -127,6 +136,16 @@ class Grid:
                     words.append(((row, col), Mode.DOWN))
 
         return words
+
+    def save(self, filename):
+        """
+        Saves the grid to a file.
+        """
+        import json
+
+        data = {"size": self.size, "squares": self.squares, "clues": self.clues}
+        with open(filename, "w+") as f:
+            json.dump(data, f, indent=4)
 
     def print(self):
         for row in self.squares:
