@@ -1,17 +1,17 @@
 import time
 
-from crossword.grid import Grid
 
 class SearchInfo:
-
-    def __init__(self,
-            unfilled_words,
-            used_words,
-            end_time=0,
-            score=0,
-            target_score=None,
-            verbose=False):
-        self.end_time=end_time
+    def __init__(
+        self,
+        unfilled_words,
+        used_words,
+        end_time=0,
+        score=0,
+        target_score=None,
+        verbose=False,
+    ):
+        self.end_time = end_time
         self.nodes_searched = 0
         self.unfilled_words = unfilled_words
         self.used_words = used_words
@@ -19,25 +19,28 @@ class SearchInfo:
         self.target_score = target_score
         self.verbose = verbose
 
-class Generator:
 
+class Generator:
     def __init__(self, dictionary, verbose=False):
         self.dictionary = dictionary
 
-    def optimize(self, original_grid, target_score=None, search_time=None, verbose=False):
+    def optimize(
+        self, original_grid, target_score=None, search_time=None, verbose=False
+    ):
         grid = original_grid.copy()
         end_time = time.time() + search_time if search_time else None
         info = SearchInfo(
-                unfilled_words=[],
-                used_words=[],
-                end_time=end_time,
-                score=0,
-                target_score=target_score,
-                verbose=verbose)
+            unfilled_words=[],
+            used_words=[],
+            end_time=end_time,
+            score=0,
+            target_score=target_score,
+            verbose=verbose,
+        )
 
         for square, mode in grid.get_all_words():
             word = grid.get_word(square, mode)
-            if ' ' in word:
+            if " " in word:
                 info.unfilled_words.append((square, mode))
             else:
                 info.used_words.append(word)
@@ -45,10 +48,9 @@ class Generator:
 
         return self.search(grid, info)
 
-
     def get_possible_words(self, grid, square, mode):
-        """ Returns a list of all possible words for a given square and direction
-            sorted from best to worst
+        """Returns a list of all possible words for a given square and direction
+        sorted from best to worst
         """
         word = grid.get_word(square, mode)
         words = self.dictionary.search(word)
@@ -76,7 +78,7 @@ class Generator:
         def score(target):
             square, mode = target
             word = grid.get_word(square, mode)
-            return len(word) + 5 * len(word.replace(' ', ''))
+            return len(word) + 5 * len(word.replace(" ", ""))
 
         def number_of_options(target):
             square, mode = target
@@ -85,13 +87,14 @@ class Generator:
 
         # re-order top 10 based on how many possibilities they have remaining, fewer first
         info.unfilled_words.sort(reverse=True, key=score)
-        info.unfilled_words[0:10] = sorted(info.unfilled_words[0:10], key=number_of_options)
+        info.unfilled_words[0:10] = sorted(
+            info.unfilled_words[0:10], key=number_of_options
+        )
 
         return info.unfilled_words[0]
 
     def set_word(self, grid, square, mode, word):
-        """Fills the given square with the given word
-        """
+        """Fills the given square with the given word"""
         word = word.upper()
         squares = grid.get_word_squares(square, mode)
         for i, square in enumerate(squares):
@@ -99,7 +102,7 @@ class Generator:
                 grid.set_square(square, word[i])
 
     def search(self, grid, info):
-        """ Recursive function that picks a square then loops through all available words.
+        """Recursive function that picks a square then loops through all available words.
         Returns false if no words are valid, true if the puzzle is complete"
         """
         info.nodes_searched += 1

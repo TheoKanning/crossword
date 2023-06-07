@@ -14,7 +14,7 @@ class Background(Enum):
     HIGHLIGHT = 2
 
 
-Square = namedtuple('Square', ['text', 'background', 'focused', 'bold'])
+Square = namedtuple("Square", ["text", "background", "focused", "bold"])
 
 
 class Model:
@@ -22,7 +22,9 @@ class Model:
     A class that holds the UI state for a crossword puzzle.
     """
 
-    def __init__(self, squares=None, filename=None, size=15, dictionary_path="dictionaries/"):
+    def __init__(
+        self, squares=None, filename=None, size=15, dictionary_path="dictionaries/"
+    ):
         if squares:
             self.grid = Grid(squares, size)
         elif filename and path.exists(filename):
@@ -34,7 +36,10 @@ class Model:
         self.focus = (0, 0)
         self.highlight = []
         self.mode = Mode.ACROSS
-        self.set_manually = [[not self.grid.is_empty((r, c)) for c in range(self.size)] for r in range(self.size)]
+        self.set_manually = [
+            [not self.grid.is_empty((r, c)) for c in range(self.size)]
+            for r in range(self.size)
+        ]
         self.dictionary = Dictionary(dictionary_path)
 
     def toggle_orientation(self):
@@ -55,9 +60,9 @@ class Model:
             self.grid.set_square((self.size - 1 - row, self.size - 1 - col), BLOCK)
         elif self.grid.get_square((row, col)) == BLOCK and text != BLOCK:
             # remove corresponding block if this square used to be a block
-            self.grid.set_square((self.size - 1 - row, self.size - 1 - col), '')
+            self.grid.set_square((self.size - 1 - row, self.size - 1 - col), "")
         self.grid.set_square((row, col), text)
-        self.set_manually[row][col] = text != ''
+        self.set_manually[row][col] = text != ""
         self.get_next_focus(text)
         self.update_highlighted_squares()
 
@@ -79,7 +84,7 @@ class Model:
         """
         Get the coordinates of the square that should be focused after the given square
         """
-        if text == '':
+        if text == "":
             # text was deleted, go backwards
             if self.mode is Mode.ACROSS:
                 self.move_left()
@@ -133,8 +138,12 @@ class Model:
 
             cross_index = self.grid.get_word_squares(s, mode.opposite()).index(s)
             cross_word = self.grid.get_word(s, mode.opposite())
-            available_letters = self.dictionary.get_allowed_letters(cross_word, cross_index)
-            compatible_words = [w for w in compatible_words if w[0][i] in available_letters]
+            available_letters = self.dictionary.get_allowed_letters(
+                cross_word, cross_index
+            )
+            compatible_words = [
+                w for w in compatible_words if w[0][i] in available_letters
+            ]
 
         # add bonus to compatible words
         for i, w in enumerate(words):
@@ -145,14 +154,14 @@ class Model:
         return words
 
     def fill(self):
-        """ Fill in any blank squares. Letters not set manually will appear gray """
+        """Fill in any blank squares. Letters not set manually will appear gray"""
         grid = self.grid.copy()
 
         # clear any squares set by previous fills
         for r in range(self.size):
             for c in range(self.size):
                 if not self.set_manually[r][c]:
-                    grid.set_square((r, c), '')
+                    grid.set_square((r, c), "")
         filled_grid, _ = optimize(grid, self.dictionary)
         self.grid = filled_grid
 

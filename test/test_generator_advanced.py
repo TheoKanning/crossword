@@ -10,7 +10,6 @@ from crossword.grid import Grid
 # dictionary is not checked in
 @unittest.skipIf(os.getenv("CI"), "Dictionary not available on CI server")
 class AdvancedGeneratorTests(unittest.TestCase):
-
     def setUp(self):
         # use default dictionary file, not available on CI
         dictionary = Dictionary()
@@ -18,11 +17,11 @@ class AdvancedGeneratorTests(unittest.TestCase):
 
     def test_finish_easy_puzzle(self):
         squares = [
-            ['.', '.', ' ', ' ', ' '],
-            ['B', 'E', 'E', 'C', 'H'],
-            ['A', 'S', 'A', 'H', 'I'],
-            ['T', 'A', 'C', 'O', 'S'],
-            ['H', 'U', 'H', '.', '.']
+            [".", ".", " ", " ", " "],
+            ["B", "E", "E", "C", "H"],
+            ["A", "S", "A", "H", "I"],
+            ["T", "A", "C", "O", "S"],
+            ["H", "U", "H", ".", "."],
         ]
         grid = Grid(squares)
         result, score = self.generator.optimize(grid)
@@ -30,11 +29,11 @@ class AdvancedGeneratorTests(unittest.TestCase):
 
     def test_finish_two_step_puzzle(self):
         squares = [
-            ['.', '.', ' ', ' ', ' '],
-            ['B', 'E', 'E', ' ', 'H'],
-            ['A', 'S', 'A', 'H', 'I'],
-            ['T', 'A', 'C', ' ', 'S'],
-            ['H', 'U', 'H', '.', '.']
+            [".", ".", " ", " ", " "],
+            ["B", "E", "E", " ", "H"],
+            ["A", "S", "A", "H", "I"],
+            ["T", "A", "C", " ", "S"],
+            ["H", "U", "H", ".", "."],
         ]
         grid = Grid(squares)
         result, score = self.generator.optimize(grid)

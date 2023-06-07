@@ -1,5 +1,6 @@
 from crossword.generate import Generator
 
+
 def optimize(grid, dictionary, optimize_sections=False):
     print("Starting optimization...")
     print("Finding initial solution...")
@@ -23,6 +24,7 @@ def optimize(grid, dictionary, optimize_sections=False):
 
     return best, best_score
 
+
 def _iterate_sections(sections, grid, dictionary):
     """
     Cuts the grid into chunks and iterates each separately
@@ -37,8 +39,8 @@ def _iterate_sections(sections, grid, dictionary):
     for i in range(sections):
         for j in range(sections):
             print(f"Optimizing chunk {chunk} of {num_chunks}")
-            row_range = ((i*size)//sections, ((i+1)*size)//sections)
-            col_range = ((j*size)//sections, ((j+1)*size)//sections)
+            row_range = ((i * size) // sections, ((i + 1) * size) // sections)
+            col_range = ((j * size) // sections, ((j + 1) * size) // sections)
             grid = _clear_letters(row_range, col_range, best)
 
             grid, score = _iterate(grid, dictionary, best_score)
@@ -50,6 +52,7 @@ def _iterate_sections(sections, grid, dictionary):
             print(f"Score after chunk {chunk}: {best_score}")
             chunk += 1
     return best, best_score
+
 
 def _iterate(grid, dictionary, target_score=None):
     """
@@ -63,10 +66,11 @@ def _iterate(grid, dictionary, target_score=None):
 
     while True:
         result, score = generator.optimize(
-              grid,
-              target_score=best_score + 1 if best_score else None,
-              search_time=10,
-              verbose=False)
+            grid,
+            target_score=best_score + 1 if best_score else None,
+            search_time=10,
+            verbose=False,
+        )
 
         print(score)
         if not best_score or score > best_score:
@@ -76,6 +80,7 @@ def _iterate(grid, dictionary, target_score=None):
             break
 
     return best, best_score
+
 
 def _clear_letters(row_range, col_range, grid):
     """
@@ -88,9 +93,10 @@ def _clear_letters(row_range, col_range, grid):
     for row in range(*row_range):
         for col in range(*col_range):
             if not grid.is_block((row, col)):
-                output.set_square((row, col), '')
+                output.set_square((row, col), "")
 
     return output
+
 
 def _grid_score(grid, dictionary):
     if not grid.is_complete():

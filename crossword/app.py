@@ -1,6 +1,6 @@
 import sys
-
 from pathlib import Path
+
 from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QGridLayout, QVBoxLayout
 from crossword.model import Model
 from crossword.view import CrosswordLineEdit, SuggestionBox
 
-FILENAME = 'saved/crossword.txt'
+FILENAME = "saved/crossword.txt"
 
 
 def start_app():
@@ -24,14 +24,13 @@ def get_box_name(row, col):
 
 # todo add coords to signals and get rid of this?
 def get_coords_from_name(name):
-    return [int(i) for i in name.split('_')]
+    return [int(i) for i in name.split("_")]
 
 
 class App(QWidget):
-
     def __init__(self):
         super().__init__()
-        self.title = 'Crossword Creator'
+        self.title = "Crossword Creator"
         self.left = 2000
         self.top = 10
         self.width = 1000
@@ -39,8 +38,8 @@ class App(QWidget):
         self.model = Model(filename=FILENAME, size=15)
         self.init_ui()
         self.update_views()
-        self.setWindowIcon(QIcon('assets/icon.png'))
-        self.setStyleSheet(Path('crossword/crossword.qss').read_text())
+        self.setWindowIcon(QIcon("assets/icon.png"))
+        self.setStyleSheet(Path("crossword/crossword.qss").read_text())
 
     def init_ui(self):
         self.setWindowTitle(self.title)
@@ -69,7 +68,6 @@ class App(QWidget):
         layout = QGridLayout()
         layout.setSpacing(0)
         layout.setRowStretch(0, 0)
-
 
         for row in range(0, 15):
             for col in range(0, 15):
@@ -106,7 +104,12 @@ class App(QWidget):
     def eventFilter(self, obj, event):
         # filter to keep LineEdits from consuming arrow keys
         if event.type() == QEvent.Type.KeyPress:
-            if event.key() in [Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Right, Qt.Key.Key_Left]:
+            if event.key() in [
+                Qt.Key.Key_Up,
+                Qt.Key.Key_Down,
+                Qt.Key.Key_Right,
+                Qt.Key.Key_Left,
+            ]:
                 if event.key() == Qt.Key.Key_Up:
                     self.model.move_up()
                 elif event.key() == Qt.Key.Key_Down:

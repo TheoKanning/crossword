@@ -5,7 +5,6 @@ from functools import lru_cache
 
 
 class Dictionary:
-
     def __init__(self, directory="dictionaries/", seed=None):
         self.dictionaries = {}
         self.create_dictionaries(directory, seed)
@@ -21,17 +20,17 @@ class Dictionary:
             with open(os.path.join(directory, filename)) as f:
                 contents.append(f.read())
 
-        text = '\n'.join(contents)
+        text = "\n".join(contents)
 
         for n in range(3, 22):
-            words = self._search_text(' ' * n, text)
+            words = self._search_text(" " * n, text)
 
             if seed is not None:
                 random.seed(seed)
                 random.shuffle(words)
 
-            words.sort(key=lambda x: x.split(';')[1], reverse=True)
-            self.dictionaries[n] = '\n'.join(words)
+            words.sort(key=lambda x: x.split(";")[1], reverse=True)
+            self.dictionaries[n] = "\n".join(words)
 
     @lru_cache(maxsize=32)
     def search(self, word, limit=1000):
@@ -45,7 +44,9 @@ class Dictionary:
 
         word = word.lower()
 
-        words = [w.split(';') for w in self._search_text(word, self.dictionaries[len(word)])]
+        words = [
+            w.split(";") for w in self._search_text(word, self.dictionaries[len(word)])
+        ]
         return words[:limit]
 
     @lru_cache(maxsize=32)
@@ -57,7 +58,7 @@ class Dictionary:
         return set([w[0][index] for w in words])
 
     def word_score(self, word):
-        if ' ' in word:
+        if " " in word:
             return 0
 
         results = self.search(word)
@@ -71,12 +72,15 @@ class Dictionary:
         """
         Finds rows matching the given word. text is a list of dictionary strings
         """
-        regex = '^' + word.replace(' ', '.') + ";.*$"  # replace wildcards, enforce start and stop
+        regex = (
+            "^" + word.replace(" ", ".") + ";.*$"
+        )  # replace wildcards, enforce start and stop
         return re.findall(regex, text, re.MULTILINE)
 
 
 if __name__ == "__main__":
     import sys
+
     query = sys.argv[1]
     dictionary = Dictionary()
     for word in dictionary.search(query):
