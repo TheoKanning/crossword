@@ -3,8 +3,8 @@ import time
 
 from crossword import dictionary, grid, optimize, storage
 
-parser = argparse.ArgumentParser(description='Fill in missing crossword squares,')
-parser.add_argument('filename', help='Path to the uncompleted crossword file')
+parser = argparse.ArgumentParser(description="Fill in missing crossword squares,")
+parser.add_argument("filename", help="Path to the uncompleted crossword file")
 filename = parser.parse_args().filename
 
 dictionary = dictionary.Dictionary(seed=0)
@@ -20,7 +20,7 @@ grid.print()
 #     score = int(dictionary.search(word)[0][1])
 #     print(f"{s} {m} {word}: {score}")
 seconds = time.time() - start
-nodes = 0 #generator.nodes_searched
+nodes = 0  # generator.nodes_searched
 
 print("")
 print(f"Total score: {total_score}")

@@ -10,7 +10,7 @@ class Mode(Enum):
         return Mode.ACROSS if self == Mode.DOWN else Mode.DOWN
 
 
-BLOCK = '.'
+BLOCK = "."
 
 
 class Grid:
@@ -23,11 +23,11 @@ class Grid:
             assert len(squares) == len(squares[0])
             size = len(squares)
         else:
-            squares = [['' for i in range(0, size)] for j in range(0, size)]
+            squares = [["" for i in range(0, size)] for j in range(0, size)]
 
         self.squares = deepcopy(squares)
         self.size = size
-        self.clues = {Mode.ACROSS: {}, Mode.DOWN: {}} # {mode: {square: clue}}
+        self.clues = {Mode.ACROSS: {}, Mode.DOWN: {}}  # {mode: {square: clue}}
 
     def copy(self):
         return Grid(self.squares)
@@ -36,7 +36,7 @@ class Grid:
         return self.squares[square[0]][square[1]]
 
     def is_empty(self, square):
-        return self.get_square(square) == ''
+        return self.get_square(square) == ""
 
     def is_block(self, square):
         return self.get_square(square) == BLOCK
@@ -44,7 +44,7 @@ class Grid:
     def is_complete(self):
         for row in self.squares:
             for letter in row:
-                if letter == '':
+                if letter == "":
                     return False
         return True
 
@@ -58,7 +58,7 @@ class Grid:
         """
         squares = self.get_word_squares(square, mode)
         chars = [self.get_square(s) for s in squares]
-        return ''.join([char if char != '' else ' ' for char in chars])
+        return "".join([char if char != "" else " " for char in chars])
 
     def get_word_squares(self, square, mode):
         """
@@ -130,4 +130,4 @@ class Grid:
 
     def print(self):
         for row in self.squares:
-            print(''.join([char if char != '' else ' ' for char in row]))
+            print("".join([char if char != "" else " " for char in row]))
