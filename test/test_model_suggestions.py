@@ -3,6 +3,7 @@ import unittest
 
 from crossword import grid
 from crossword.model import Model
+from test.common import dictionary_path
 
 squares = [
     [".", ".", "I", "D", "K"],
@@ -25,11 +26,11 @@ class ModelTests(unittest.TestCase):
             ["T", "A", "C", "O", "S"],
             ["H", "U", "H", ".", "."],
         ]
-        model = Model(squares)
+        model = Model(squares, dictionary_path=dictionary_path)
         model.update_focus(0, 2)
         across, down = model.get_suggestions()
 
-    def test_suggestions(self):
+    def test_suggestions_across(self):
         squares = [
             [".", ".", "", "", ""],
             ["B", "E", "E", "C", "H"],
@@ -37,7 +38,7 @@ class ModelTests(unittest.TestCase):
             ["T", "A", "C", "O", "S"],
             ["H", "U", "H", ".", "."],
         ]
-        model = Model(squares)
+        model = Model(squares, dictionary_path=dictionary_path)
         suggestions = model._get_suggestions((0, 2), grid.Mode.ACROSS)
         print(suggestions[:10])
 
@@ -50,7 +51,7 @@ class ModelTests(unittest.TestCase):
             ["H", "U", "H", ".", "."],
         ]
 
-        model = Model(squares)
+        model = Model(squares, dictionary_path=dictionary_path)
         model.fill()
 
         self.assertEqual([".", ".", "P", "E", "C"], model.grid.squares[0])

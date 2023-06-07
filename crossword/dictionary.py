@@ -12,7 +12,7 @@ class Dictionary:
     def create_dictionaries(self, directory, seed=None):
         """
         Break the dictionary file into a separate in-memory dictionary for each possible length
-        Sorts word by value here so they don't have to be sorted again later
+        Sorts word by value here so that they don't have to be sorted again later
         """
         files = os.listdir(directory)
         contents = []

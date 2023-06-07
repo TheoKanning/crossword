@@ -3,12 +3,13 @@ import unittest
 from parameterized import parameterized
 
 from crossword.dictionary import Dictionary
+from test.common import test_dictionary_path
 
 
 class DictionaryTests(unittest.TestCase):
     def setUp(self):
         # use test dictionary since the real one isn't checked in
-        self.dictionary = Dictionary("test/dictionaries/")
+        self.dictionary = Dictionary(test_dictionary_path)
 
     def test_single_response(self):
         results = self.dictionary.search("bird")
@@ -47,6 +48,6 @@ class DictionaryTests(unittest.TestCase):
         ]
     )
     def test_seeded_shuffling(self, seed, expected):
-        dictionary = Dictionary("test/dictionaries/", seed)
+        dictionary = Dictionary(test_dictionary_path, seed)
         words = [w[0] for w in dictionary.search("    ")]
         self.assertEqual(words, expected)

@@ -3,11 +3,12 @@ import unittest
 from crossword.dictionary import Dictionary
 from crossword.generate import Generator, SearchInfo
 from crossword.grid import Grid, Mode
+from test.common import test_dictionary_path
 
 
 class BasicGeneratorTests(unittest.TestCase):
     def setUp(self):
-        dictionary = Dictionary("test/dictionaries")
+        dictionary = Dictionary(test_dictionary_path)
         self.generator = Generator(dictionary)
 
     def test_set_word(self):
