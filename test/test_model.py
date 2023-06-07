@@ -4,6 +4,7 @@ from parameterized import parameterized
 
 from crossword import grid
 from crossword.model import Model, Background
+from test.common import test_dictionary_path as dictionary_path
 
 squares = [
     [".", ".", "I", "D", "K"],
@@ -12,8 +13,6 @@ squares = [
     ["S", "L", "A", "T", "E"],
     ["E", "E", "R", ".", "."],
 ]
-
-dictionary_path = "test/dictionaries/"
 
 
 class ModelTests(unittest.TestCase):

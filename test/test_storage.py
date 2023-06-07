@@ -3,7 +3,7 @@ import unittest
 
 from crossword import storage
 
-TEST_FILE = "test/test_crossword.txt"
+TEST_FILE = "test_crossword.txt"
 
 
 class StorageTests(unittest.TestCase):
