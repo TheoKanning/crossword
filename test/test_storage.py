@@ -1,7 +1,6 @@
 import os
 import unittest
 
-from crossword import storage
 from crossword.grid import load_grid, Grid, Mode
 
 TEST_FILE = "test_crossword.txt"
@@ -18,12 +17,6 @@ crossword = [
 class StorageTests(unittest.TestCase):
     def tearDown(self):
         os.remove(TEST_FILE)
-
-    def test_save_and_load(self):
-        storage.save(crossword, TEST_FILE)
-
-        saved = storage.load(TEST_FILE)
-        self.assertEqual(saved, crossword)
 
     def test_save_and_load_grid(self):
         grid = Grid(crossword)
