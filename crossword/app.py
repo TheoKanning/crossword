@@ -35,7 +35,7 @@ class App(QWidget):
         self.top = 10
         self.width = 1000
         self.height = 480
-        self.model = Model(filename=FILENAME, size=15)
+        self.model = Model(filename=FILENAME)
         self.init_ui()
         self.update_views()
         self.setWindowIcon(QIcon("assets/icon.png"))
