@@ -2,9 +2,8 @@ from collections import namedtuple
 from enum import Enum
 from os import path
 
-from crossword import storage
 from crossword.dictionary import Dictionary
-from crossword.grid import BLOCK, Grid, Mode
+from crossword.grid import BLOCK, Grid, Mode, load_grid
 from crossword.optimize import optimize
 
 
@@ -20,6 +19,8 @@ Square = namedtuple("Square", ["text", "background", "focused", "bold"])
 class Model:
     """
     A class that holds the UI state for a crossword puzzle.
+    Manages things like the pointer position, navigation, and square highlighting.
+    Anything that needs to be saved between sessions belongs in Grid.
     """
 
     def __init__(
@@ -28,8 +29,8 @@ class Model:
         if squares:
             self.grid = Grid(squares, size)
         elif filename and path.exists(filename):
-            squares = storage.load(filename)
-            self.grid = Grid(squares)
+            # squares = storage.load(filename)
+            self.grid = load_grid(filename)
         else:
             self.grid = Grid(size=size)
         self.size = self.grid.size
@@ -51,7 +52,7 @@ class Model:
         self.update_highlighted_squares()
 
     def save(self, filename):
-        storage.save(self.grid.squares, filename)
+        self.grid.save(filename)
 
     def update_square(self, row, col, text):
         # maintain block symmetry

@@ -22,7 +22,8 @@ def load_grid(filename):
 
 class Grid:
     """
-    A class that holds the letters and blocks of a crossword grid.
+    A class that holds the blocks, letters, and clues of a crossword grid.
+    Everything that needs to be saved between sessions belongs here
     """
 
     def __init__(self, squares=None, size=15, clues=None):

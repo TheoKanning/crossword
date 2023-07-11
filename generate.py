@@ -1,14 +1,14 @@
 import argparse
 import time
 
-from crossword import dictionary, grid, optimize, storage
+from crossword import dictionary, grid, optimize
 
 parser = argparse.ArgumentParser(description="Fill in missing crossword squares,")
 parser.add_argument("filename", help="Path to the uncompleted crossword file")
 filename = parser.parse_args().filename
 
 dictionary = dictionary.Dictionary(seed=0)
-grid = grid.Grid(storage.load(filename))
+grid = grid.load_grid(filename)
 start = time.time()
 
 grid, total_score = optimize.optimize(grid, dictionary, optimize_sections=True)
