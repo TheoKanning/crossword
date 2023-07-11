@@ -19,20 +19,18 @@ Square = namedtuple("Square", ["text", "background", "focused", "bold"])
 class Model:
     """
     A class that holds the UI state for a crossword puzzle.
-    Manages things like the pointer position, navigation, and square highlighting.
+    Manages things like the pointer position, navigation, and searching.
     Anything that needs to be saved between sessions belongs in Grid.
     """
 
-    def __init__(
-        self, squares=None, filename=None, size=15, dictionary_path="dictionaries/"
-    ):
-        if squares:
-            self.grid = Grid(squares, size)
-        elif filename and path.exists(filename):
-            # squares = storage.load(filename)
+    def __init__(self, grid=None, filename=None, dictionary_path="dictionaries/"):
+        if grid:
+            self.grid = grid
+        elif filename:
             self.grid = load_grid(filename)
         else:
-            self.grid = Grid(size=size)
+            raise ValueError("Must provide either grid or filename")
+
         self.size = self.grid.size
         self.focus = (0, 0)
         self.highlight = []
