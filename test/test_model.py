@@ -117,6 +117,17 @@ class ModelTests(unittest.TestCase):
         model.move_right()
         self.assertEqual(model.focus, (2, 2))
 
+    def test_set_and_get_clue(self):
+        model = Model(grid, dictionary_path=dictionary_path)
+        model.mode = Mode.ACROSS
+        model.focus = (0, 4)
+        model.set_clue("Clue 1")
+
+        self.assertEqual(model.get_clue(), "Clue 1")
+
+        model.focus = (0, 2)
+        self.assertEqual(model.get_clue(), "Clue 1")
+
 
 if __name__ == "__main__":
     unittest.main()

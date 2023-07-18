@@ -109,6 +109,8 @@ class Grid:
         """
         Returns the clue for the word containing the given square.
         """
+        if self.is_block(square):
+            return ""
         start = self.get_word_start_square(square, mode)
         return self.clues[str(mode)].get(str(start), "")
 
@@ -116,6 +118,8 @@ class Grid:
         """
         Sets the clue for the word containing the given square.
         """
+        if self.is_block(square):
+            return
         start = self.get_word_start_square(square, mode)
         self.clues[str(mode)][str(start)] = clue
 

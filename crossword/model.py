@@ -76,6 +76,12 @@ class Model:
         bold = self.set_manually[row][col]
         return Square(text, background, focused, bold)
 
+    def get_clue(self):
+        return self.grid.get_clue(self.focus, self.mode)
+
+    def set_clue(self, clue):
+        self.grid.set_clue(self.focus, self.mode, clue)
+
     def update_highlighted_squares(self):
         self.highlight = self.grid.get_word_squares(self.focus, self.mode)
 

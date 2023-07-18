@@ -21,6 +21,13 @@ QLabel#suggestion_box {
   padding: 8px;
 }
 
+QLineEdit#clue_box {
+  color: #464d55;
+  background-color: #fff;
+  border: 1px solid #e3e3e3;
+  padding: 8px;
+}
+
 QPushButton {
   background-color: #0d6efd;
   color: #fff;

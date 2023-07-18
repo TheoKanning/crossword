@@ -4,7 +4,7 @@ from pathlib import Path
 from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QWidget, QGroupBox, QPushButton, QHBoxLayout
-from PyQt6.QtWidgets import QGridLayout, QVBoxLayout
+from PyQt6.QtWidgets import QGridLayout, QVBoxLayout, QLineEdit
 
 from crossword.model import Model
 from crossword.view import CrosswordLineEdit, SuggestionBox
@@ -52,11 +52,18 @@ class App(QWidget):
         self.across_suggestions = SuggestionBox("Across")
         self.down_suggestions = SuggestionBox("Down")
 
-        window_layout = QHBoxLayout()
-        window_layout.addWidget(self.grid_group_box)
-        window_layout.addWidget(self.across_suggestions)
-        window_layout.addWidget(self.down_suggestions)
-        window_layout.addWidget(self.options_group_box)
+        window_layout = QVBoxLayout()
+        bottom_layout = QHBoxLayout()
+        bottom_layout.addWidget(self.grid_group_box)
+        bottom_layout.addWidget(self.across_suggestions)
+        bottom_layout.addWidget(self.down_suggestions)
+        bottom_layout.addWidget(self.options_group_box)
+        window_layout.addLayout(bottom_layout)
+
+        self.clue_box = QLineEdit()
+        self.clue_box.setObjectName("clue_box")
+        self.clue_box.textChanged.connect(self.on_clue_edited)
+        window_layout.addWidget(self.clue_box)
 
         self.setLayout(window_layout)
 
@@ -139,6 +146,9 @@ class App(QWidget):
         self.model.update_focus(row, col)
         self.update_views()
 
+    def on_clue_edited(self, text):
+        self.model.set_clue(text)
+
     def update_views(self):
         for row in range(0, self.model.size):
             for col in range(0, self.model.size):
@@ -147,8 +157,12 @@ class App(QWidget):
                 self.grid_group_box.findChild(CrosswordLineEdit, name).update(square)
 
         self.update_suggestions()
+        self.update_clue()
 
     def update_suggestions(self):
         across, down = self.model.get_suggestions()
         self.across_suggestions.update_suggestions(across)
         self.down_suggestions.update_suggestions(down)
+
+    def update_clue(self):
+        self.clue_box.setText(self.model.get_clue())
