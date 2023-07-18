@@ -32,10 +32,10 @@ class SuggestionBox(QGroupBox):
         scroll.setWidgetResizable(True)
 
         self.suggestions = QLabel()
+        self.suggestions.setObjectName("suggestion_box")
+        self.suggestions.setAlignment(Qt.AlignmentFlag.AlignTop)
         scroll.setWidget(self.suggestions)
-        layout.addWidget(
-            scroll,
-        )
+        layout.addWidget(scroll)
 
         self.setLayout(layout)
 
